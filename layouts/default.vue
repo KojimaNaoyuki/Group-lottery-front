@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="box">
     <Nuxt />
   </div>
 </template>
@@ -58,5 +58,11 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+
+.box {
+  width: 100vw;
+  height: 100vh;
+  background-color: #3b8070;
 }
 </style>
