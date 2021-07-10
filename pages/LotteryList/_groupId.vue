@@ -1,6 +1,7 @@
 <template>
     <div class="box">
         <h2 class="group-name">Group Name</h2>
+
         <div class="card">
             <h3 class="card-title">TitleTitle</h3>
             <h4 class="card-day">期限： 2021/06/29</h4>
@@ -28,18 +29,18 @@ export default {
 
 <style scoped>
 .group-name {
-    padding: 20px 0;
+    padding: 40px 0;
     text-align: center;
     font-size: 22px;
 }
 .card {
     position: relative;
-    padding: 20px 0;
-    margin: 0 auto 30px auto;
-    width: 80%;
-    background-color: #95afa0;
+    padding: 20px;
+    background-color: #44968e;
     text-align: center;
-    border-radius: 8px;
+}
+.card:nth-child(odd) {
+    background-color: #74a9a7;
 }
 .card:last-child {
     margin: 0 auto
@@ -49,7 +50,7 @@ export default {
     width: 80%;
     padding: 5px 0;
     font-size: 20px;
-    border-bottom: solid 2px #808080;
+    border-bottom: solid 2px #2382ce;
 }
 .card-day {
     padding: 25px 0;

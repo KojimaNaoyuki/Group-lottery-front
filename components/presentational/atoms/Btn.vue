@@ -11,7 +11,7 @@ export default {
 <style scoped>
 .tg {
     padding: 2px 40px;
-    background-color: #139a07;
+    background-color: #2382ce;
     border: none;
     font-size: 16px;
     font-weight: bold;

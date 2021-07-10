@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="boxDefault">
     <Nuxt />
   </div>
 </template>
@@ -60,9 +60,9 @@ html {
   background-color: #35495e;
 }
 
-.box {
+.boxDefault {
   width: 100vw;
   height: 100vh;
-  background-color: #3b8070;
+  background-color: #c7c7c7;
 }
 </style>

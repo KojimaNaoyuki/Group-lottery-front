@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="boxMain">
     <Header />
     <Nuxt />
   </div>
@@ -14,3 +14,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.boxMain {
+  width: 100vw;
+  height: 100vh;
+  background-color: #4f7776;
+}
+</style>
