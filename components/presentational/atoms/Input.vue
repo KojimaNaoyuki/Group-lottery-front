@@ -19,6 +19,6 @@ export default {
     transition: all 0.4s;
 }
 .tg:hover {
-    border-bottom: solid 2px #ecf575;
+    border-bottom: solid 2px #3f51b5;
 }
 </style>

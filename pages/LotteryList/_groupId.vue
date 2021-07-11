@@ -1,6 +1,8 @@
 <template>
     <div class="box">
-        <h2 class="group-name">Group Name</h2>
+        <div class="group">
+            <h2 class="group-name">Group Name</h2>
+        </div>
 
         <div class="card">
             <h3 class="card-title">TitleTitle</h3>
@@ -20,7 +22,7 @@
 <script>
 import Btn from './../../components/presentational/atoms/Btn.vue';
 export default {
-    layout: 'main',
+    layout: 'deepPageLayout',
     components: {
         Btn
     }
@@ -28,6 +30,10 @@ export default {
 </script>
 
 <style scoped>
+.group {
+    position: relative;
+    background-color: #69b5a3;
+}
 .group-name {
     padding: 40px 0;
     text-align: center;

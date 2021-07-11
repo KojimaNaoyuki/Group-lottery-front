@@ -63,6 +63,6 @@ html {
 .boxDefault {
   width: 100vw;
   height: 100vh;
-  background-color: #c7c7c7;
+  background-color: #4f7776;
 }
 </style>

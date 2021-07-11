@@ -4,7 +4,7 @@
         <div class="header-title-wrap">
             <h1 class="header-title">Group Lottery</h1>
         </div>
-        <div class="header-drawer-meny">
+        <div class="header-drawer-meny" @click="clickedFnMenu">
             <DrawerMenyIcon />
         </div>
     </header>
@@ -16,6 +16,11 @@ import DrawerMenyIcon from './DrawerMenyIcon.vue';
 export default {
     components: {
         DrawerMenyIcon
+    },
+    methods: {
+        clickedFnMenu: function() {
+            this.$emit('clickedFnMenu');
+        }
     }
 }
 </script>
@@ -31,11 +36,11 @@ export default {
     background-color: #4f7776;
 }
 .header-title {
-    font-size: 26px;
+    font-size: 24px;
 }
 .header-title-wrap {
     width: 200px;
-    height: 55px;
+    height: 45px;
     padding: 5px 10px;
     background-color: #69b5a3;
 }
@@ -43,9 +48,8 @@ export default {
     position: absolute;
     top: 0;
     left: 0;
-    /* width: 240px; */
     width: 70%;
-    height: 55px;
+    height: 45px;
     transform:skewX(-30deg);
     background-color: #69b5a3;
     z-index: -100;
