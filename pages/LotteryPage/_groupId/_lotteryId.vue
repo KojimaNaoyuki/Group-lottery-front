@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div class="lottery-info">
-            <div class="back-img"><h3>&lt;</h3></div>
+            <div class="back-img"><NuxtLink to="/LotteryList"><h3>&lt;</h3></NuxtLink></div>
             <h2 class="lottery-info-title">titletitle</h2>
             <h3 class="lottery-info-day">期限： 2021/06/29</h3>
         </div>
@@ -120,6 +120,11 @@ export default {
 </script>
 
 <style scoped>
+a {
+    text-decoration: none;
+    color: #3f51b5;
+}
+
 .lottery-info {
     position: relative;
     padding: 0 0 20px 0;
