@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div class="group">
-            <h2 class="group-name">Group Name</h2>
+            <h2 class="group-name">{{groupName}}</h2>
         </div>
 
         <div class="card">
@@ -20,11 +20,43 @@
 </template>
 
 <script>
+import axios from "axios";
 import Btn from './../../components/presentational/atoms/Btn.vue';
 export default {
     layout: 'deepPageLayout',
     components: {
         Btn
+    },
+    data() {
+        return {
+            groupName: '存在しないグループ',
+            firebase_id: null
+        }
+    },
+    mounted: async function() {
+        //グループIDを切り出す、DB検索用に
+        let groupId =  this.$route.params.groupId;
+        let groupIdLength = groupId.length-4;
+        const dbGroupId = groupId.slice(0, groupIdLength);
+        
+        //DB検索
+        await axios
+        .get("http://localhost:8000/api/group/" + dbGroupId)
+        .then(response => {
+            this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
+            this.groupName = response.data.data[0].name; //groupNameを取得
+        })
+        .catch(error => console.log('エラー: ' + error));
+
+        //グループidの検証
+        console.log(groupId + ' == ' + this.firebase_id);
+        if(Number(groupId) == this.firebase_id) {
+            console.log('グループid検証完了');
+        } else {
+            console.log('グループidが不正です');
+            alert('グループが存在しません');
+            window.location = "/";
+        }
     }
 }
 </script>
