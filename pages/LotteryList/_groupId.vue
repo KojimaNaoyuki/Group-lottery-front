@@ -4,17 +4,12 @@
             <h2 class="group-name">{{groupName}}</h2>
         </div>
 
-        <div class="card">
-            <h3 class="card-title">TitleTitle</h3>
-            <h4 class="card-day">期限： 2021/06/29</h4>
+        <div class="card" v-for="item in LotteryArr" :key="item.id">
+            <h3 class="card-title">{{item.lottery_title}}</h3>
+            <h4 class="card-day">期限： {{item.lottery_day}}</h4>
             <Btn text="投票"/>
-            <div class="card-status">受付中</div>
-        </div>
-        <div class="card">
-            <h3 class="card-title">TitleTitle</h3>
-            <h4 class="card-day">期限： 2021/06/29</h4>
-            <Btn text="投票"/>
-            <div class="card-status">受付中</div>
+            <div class="card-status" v-if="item.public_private_info">受付中</div>
+            <div class="card-status-stop" v-if="!item.public_private_info">受付停止</div>
         </div>
     </div>
 </template>
@@ -30,7 +25,8 @@ export default {
     data() {
         return {
             groupName: '存在しないグループ',
-            firebase_id: null
+            firebase_id: null,
+            LotteryArr: []
         }
     },
     mounted: async function() {
@@ -57,6 +53,15 @@ export default {
             alert('グループが存在しません');
             window.location = "/";
         }
+
+        //ルーム取得
+        await axios
+        .get("http://localhost:8000/api/roomCustom?group_id=" + dbGroupId)
+        .then(response => {
+            console.log(response.data.data);
+            this.LotteryArr = response.data.data;
+        })
+        .catch(error => console.log(error));
     }
 }
 </script>
@@ -100,6 +105,14 @@ export default {
     right: 10px;
     bottom: 5px;
     color: brown;
+    font-size: 16px;
+    font-weight: bold;
+}
+.card-status-stop {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+    color: #3e4b94;
     font-size: 16px;
     font-weight: bold;
 }
