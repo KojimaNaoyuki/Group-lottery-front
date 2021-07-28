@@ -2,8 +2,8 @@
     <div class="box">
         <div class="lottery-info">
             <div class="back-img"><NuxtLink to="/LotteryList"><h3>&lt;</h3></NuxtLink></div>
-            <h2 class="lottery-info-title">titletitle</h2>
-            <h3 class="lottery-info-day">期限： 2021/06/29</h3>
+            <h2 class="lottery-info-title">{{LotteryInfo.lottery_title}}</h2>
+            <h3 class="lottery-info-day">期限： {{LotteryInfo.lottery_day}}</h3>
         </div>
         <!-- アコーディオンメニュー -->
         <div class="list" id="list0">
@@ -38,9 +38,18 @@
             <div class="list-contents">
                 <label class="input-box">
                     名前&ensp;
-                    <Input placeholder="入力"/>
+                    <input type="text" class="input" placeholder="入力" v-model="inputName[0]">
+                    <form name="formSelect">
+                        <select name="year" class="input-select">
+                            <option value="1">1年</option>
+                            <option value="2">2年</option>
+                            <option value="3">3年</option>
+                            <option value="4">4年</option>
+                            <option value="0">他</option>
+                        </select>
+                    </form>
                 </label>
-                <Btn text="登録" class="list-btn"/>
+                <Btn text="登録" class="list-btn" @clickedFn="registerMember"/>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -51,7 +60,16 @@
             <div class="list-contents-big">
                 <label class="input-box" v-for="n in inputNum" :key="n">
                     名前&ensp;
-                    <Input placeholder="入力"/>
+                    <input type="text" class="input" placeholder="入力" v-model="inputName[n]">
+                    <form :name="'formSelect' + n">
+                        <select :name="'year' + n" class="input-select">
+                            <option value="1">1年</option>
+                            <option value="2">2年</option>
+                            <option value="3">3年</option>
+                            <option value="4">4年</option>
+                            <option value="0">他</option>
+                        </select>
+                    </form>
                 </label>
 
                 <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
@@ -64,6 +82,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import ListOpenIcon from './../../../components/presentational/atoms/ListOpenIcon.vue';
 import Input from './../../../components/presentational/atoms/Input.vue';
 import Btn from './../../../components/presentational/atoms/Btn.vue';
@@ -79,8 +98,23 @@ export default {
             list0Text: '+',
             list1Text: '+',
             list2Text: '+',
-            inputNum: 2
+            inputNum: 2,
+            LotteryId: null,
+            LotteryInfo: [],
+            inputName: []
         }
+    },
+    mounted: async function() {
+        //抽選IDを取得
+        this.LotteryId = Number(this.$route.params.lotteryId);
+
+        //抽選情報を取得
+        await axios
+        .get("http://localhost:8000/api/room/" + this.LotteryId)
+        .then(response => {
+            this.LotteryInfo = response.data.data[0];
+        })
+        .catch(error => console.log(error));
     },
     methods: {
         listOpen: function(num) {
@@ -114,6 +148,24 @@ export default {
         inputAdd: function() {
             //テキストボックス追加
             this.inputNum++;
+        },
+        registerMember: async function() {
+            //メンバー登録
+            const selectNum = document.formSelect.year.selectedIndex;
+            const schoolYear = Number(document.formSelect.year.options[selectNum].value);
+
+            const sendData = {
+                member_name	: this.inputName[0],
+                school_year: schoolYear,
+                room_id: this.LotteryId
+            }
+            console.log(sendData);
+            await axios
+            .post("http://localhost:8000/api/roomMember/", sendData)
+            .then(() => console.log("データベース登録完了"))
+            .catch(error => console.log(error));
+
+            alert('登録しました');
         }
     }
 }
@@ -123,6 +175,9 @@ export default {
 a {
     text-decoration: none;
     color: #3f51b5;
+}
+form {
+    display: inline;
 }
 
 .lottery-info {
@@ -243,5 +298,30 @@ a {
 .list-add-btn {
     margin: 30px auto;
     display: block;
+}
+
+.input {
+  width: 60%;
+  padding: 0 5px;
+  background-color: transparent;
+  border: none;
+  border-bottom: solid 2px #525252;
+  outline: none !important;
+  transition: all 0.4s;
+}
+.input:hover {
+  border-bottom: solid 2px #3f51b5;
+}
+
+.input-select {
+    width: 60px;
+    padding: 0 5px;
+    background-color: transparent;
+    border: solid 2px #525252;
+    outline: none !important;
+    transition: all 0.4s;
+}
+.input-select:hover {
+  border: solid 2px #3f51b5;
 }
 </style>
