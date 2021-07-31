@@ -16,17 +16,12 @@
                         <h3>状態</h3>
                     </div>
                 </div>
-                <div class="member-list-contents">
-                    <div class="leader-icon"></div>
-                    <h4>埼玉太郎</h4>
-                    <h4>3</h4>
-                    <h4>参加</h4>
-                </div>
-                <div class="member-list-contents">
-                    <div class="leader-icon"></div>
-                    <h4>五郎埼玉</h4>
-                    <h4>2</h4>
-                    <h4>保留</h4>
+                <div class="member-list-contents" v-for="item in memberArr" :key="item.id">
+                    <div class="leader-icon" v-if="item.id == item.group_judg"></div>
+                    <h4>{{item.member_name}}</h4>
+                    <h4>{{item.school_year | otherYear}}</h4>
+                    <h4 v-if="item.status == 'join'">参加</h4>
+                    <h4 v-if="item.status == 'hold'">保留</h4>
                 </div>
             </div>
         </div>
@@ -109,7 +104,8 @@ export default {
             inputNum: 2,
             LotteryId: null,
             LotteryInfo: [],
-            inputName: []
+            inputName: [],
+            memberArr: []
         }
     },
     mounted: async function() {
@@ -123,6 +119,32 @@ export default {
             this.LotteryInfo = response.data.data[0];
         })
         .catch(error => console.log(error));
+
+        //メンバーを取得
+        await axios
+        .get("http://localhost:8000/api/roomMemberWhereRoomId/?room_id=" + this.LotteryId)
+        .then(response => {
+            this.memberArr = response.data.data;
+        })
+        .catch(error => console.log(error));
+    },
+    filters: {
+        otherYear: function(value) {
+            if(value == 0) {
+                return '他'
+            } else {
+                return value;
+            }
+        }
+    },
+    computed: {
+        judgStatus: function(status) {
+            if(status == 'join') {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     methods: {
         listOpen: function(num) {

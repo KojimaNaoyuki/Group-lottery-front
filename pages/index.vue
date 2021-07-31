@@ -40,15 +40,19 @@
         <h3 class="login-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />主催者ログイン</h3>
         <div class="login-contents">
           <label class="login-label">
+            <div class="login-input-box">グループID</div>
+            <input type="text" placeholder="入力" class="input" v-model="groupInputId">
+          </label>
+          <label class="login-label">
             <div class="login-input-box">メールアドレス</div>
-            <input type="text" placeholder="入力" class="input">
+            <input type="text" placeholder="入力" class="input" v-model="loginEmail">
           </label>
           <label class="login-label">
             <div class="login-input-box">パスワード</div>
-            <input type="text" placeholder="入力" class="input">
+            <input type="password" placeholder="入力" class="input" v-model="loginPassword">
           </label>
 
-          <Btn text="ログイン" />
+          <Btn text="ログイン" @clickedFn="login" />
         </div>
       </section>
       <!-- アコーディオンメニュー -->
@@ -78,7 +82,9 @@ export default {
       groupName: null,
       password: null,
       passwordre: null,
-      groupInputId: null
+      groupInputId: null,
+      loginEmail: null,
+      loginPassword: null
     }
   },
   methods: {
@@ -122,6 +128,24 @@ export default {
         alert('メールアドレスまたは、パスワードが入力されていません');
         return;
       }
+
+      //最後に登録されているグループidを取得
+      let lastedId = 0;
+      await axios
+      .get("http://localhost:8000/api/group")
+      .then(response => {
+        response.data.data.forEach(element => {
+          lastedId = element.id;
+        });
+      })
+      .catch(error => console.log('エラー: ' + error));
+
+      //グループIDを発行
+      lastedId++;
+      let groupId = lastedId;
+      groupId += this.random();
+      Number(groupId);
+      console.log('groupId: ' + groupId);
       
       await firebase.auth()
       .createUserWithEmailAndPassword(this.email, this.password) //新規登録
@@ -156,31 +180,13 @@ export default {
       }
 
       await firebase.auth().currentUser.updateProfile({
-        displayName: this.groupName
+        displayName: groupId
       }).then(() => {
         console.log('displayName設定完了');
       }).catch(error => console.log(error));
 
       ////////////////////////////////////////////////////////////
       //DB登録
-
-      //最後に登録されているグループidを取得
-      let lastedId = 0;
-      await axios
-      .get("http://localhost:8000/api/group")
-      .then(response => {
-        response.data.data.forEach(element => {
-          lastedId = element.id;
-        });
-      })
-      .catch(error => console.log('エラー: ' + error));
-
-      //グループIDを発行
-      lastedId++;
-      let groupId = lastedId;
-      groupId += this.random();
-      Number(groupId);
-      console.log('groupId: ' + groupId);
 
       //データベースに登録
       const sendData = {
@@ -196,9 +202,22 @@ export default {
 
       alert('アカウントを作成しました\nグループIDは ' + groupId + ' です');
     },
+    login: async function() {
+      if(!this.loginEmail || !this.loginPassword) {
+        alert('メールアドレスまたはパスワードが入力されていません。')
+        return
+      }
+
+      firebase
+      .auth()
+      .signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
+      .then(() => {
+        this.$router.push('/ManagementPage/' + this.groupInputId);
+      })
+    },
 
     ToLotteryList: function() {
-      window.location = "/LotteryList/" + this.groupInputId;
+      this.$router.push('/LotteryList/' + this.groupInputId);
     }
   }
 };

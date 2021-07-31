@@ -45,6 +45,25 @@
                     <div class="list-input-box">抽選をする</div>
                     <Btn text="実行"/>
                 </label>
+                <label class="list-label">
+                    <div class="list-input-box">投票を削除</div>
+                    <Btn text="削除" @clickedFn="deleteLottery" />
+                </label>
+            </div>
+        </div>
+        <!-- アコーディオンメニュー -->
+
+        <!-- アコーディオンメニュー -->
+        <div class="list" id="list2">
+            <h2 class="list-title" @click="listOpen(2)"><ListOpenIcon :text="list2Text" />アカウント管理</h2>
+            <div class="list-contents-big">
+                <label class="list-label">
+                    <Btn text="ログアウト" @clickedFn="logout" />
+                </label>
+                <label class="list-label">
+                    <div class="list-input-box">アカウントを削除</div>
+                    <Btn text="削除" />
+                </label>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -53,6 +72,7 @@
 
 <script>
 import axios from "axios";
+import firebase from '~/plugins/firebase';
 import ListOpenIcon from './../../components/presentational/atoms/ListOpenIcon.vue';
 import Btn from './../../components/presentational/atoms/Btn.vue';
 
@@ -76,6 +96,17 @@ export default {
         }
     },
     mounted: async function() {
+        //ログイン判定
+        firebase.auth().onAuthStateChanged(user => {
+            if(!user) {
+                //ログインされていない
+                alert("ログインされていません");
+                this.$router.push('/');
+            } else {
+                console.log('正常にログインされています');
+            }
+        });
+
         //グループIDを切り出す、DB検索用に
         let groupId =  this.$route.params.groupId;
         let groupIdLength = groupId.length-4;
@@ -177,6 +208,25 @@ export default {
             .catch(error => console.log(error));
 
             alert('投票を作成しました');
+        },
+        deleteLottery: async function() {
+            //抽選を削除
+            const selectNum = document.formSelect.lotterySelect.selectedIndex;
+            const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
+
+            await axios
+            .delete("http://localhost:8000/api/room/" + LotteryId)
+            .then(() => console.log("削除完了"))
+            .catch(error => console.log(error));
+
+            alert('削除しました');
+        },
+        logout: function() {
+            //ログアウト
+            firebase.auth().signOut().then(() => {
+                alert('ログアウトが完了しました');
+                this.$router.replace('/');
+            });
         }
     }
 }
