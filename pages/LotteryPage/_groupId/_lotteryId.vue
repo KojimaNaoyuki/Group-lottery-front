@@ -47,9 +47,13 @@
                             <option value="4">4年</option>
                             <option value="0">他</option>
                         </select>
+                        <select name="status" class="input-select">
+                            <option value="join">参加</option>
+                            <option value="hold">保留</option>
+                        </select>
                     </form>
                 </label>
-                <Btn text="登録" class="list-btn" @clickedFn="registerMember"/>
+                <Btn text="登録" class="list-btn" @clickedFn="registerMember" />
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -69,12 +73,16 @@
                             <option value="4">4年</option>
                             <option value="0">他</option>
                         </select>
+                        <select :name="'status' + n" class="input-select">
+                            <option value="join">参加</option>
+                            <option value="hold">保留</option>
+                        </select>
                     </form>
                 </label>
 
                 <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
 
-                <Btn text="登録" class="list-btn"/>
+                <Btn text="登録" class="list-btn" @clickedFn="registerMemberMulti" />
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -151,12 +159,29 @@ export default {
         },
         registerMember: async function() {
             //メンバー登録
-            const selectNum = document.formSelect.year.selectedIndex;
+
+            //代表者のIDを取得
+            let leaderId;
+            await axios
+            .get("http://localhost:8000/api/roomMemberGetMaxId")
+            .then(response => {
+                leaderId = response.data.data + 1;
+            })
+            .catch(error => console.log(error));
+
+            let selectNum;
+
+            selectNum = document.formSelect.year.selectedIndex;
             const schoolYear = Number(document.formSelect.year.options[selectNum].value);
 
+            selectNum = document.formSelect.status.selectedIndex;
+            const status = document.formSelect.status.options[selectNum].value;
+
             const sendData = {
-                member_name	: this.inputName[0],
+                member_name: this.inputName[0],
                 school_year: schoolYear,
+                status: status,
+                group_judg: leaderId,
                 room_id: this.LotteryId
             }
             console.log(sendData);
@@ -166,6 +191,49 @@ export default {
             .catch(error => console.log(error));
 
             alert('登録しました');
+        },
+        registerMemberMulti: async function() {
+            //メンバー登録 複数人
+
+            //代表者のIDを取得
+            let leaderId;
+            await axios
+            .get("http://localhost:8000/api/roomMemberGetMaxId")
+            .then(response => {
+                leaderId = response.data.data + 1;
+            })
+            .catch(error => console.log(error));
+
+            let selectNum;
+            let schoolYear;
+            let status;
+            let str;
+            for(let i = 1; i < this.inputNum + 1; i++) {
+                str = 'document.formSelect' + i + '.year' + i;
+                selectNum = eval(str + '.selectedIndex');
+                str += '.options[' + selectNum + '].' + 'value';
+                schoolYear = Number(eval(str));
+
+                str = 'document.formSelect' + i + '.status' + i;
+                selectNum = eval(str + '.selectedIndex');
+                str += '.options[' + selectNum + '].' + 'value';
+                status = eval(str);
+
+                const sendData = {
+                    member_name: this.inputName[i],
+                    school_year: schoolYear,
+                    status: status,
+                    group_judg: leaderId,
+                    room_id: this.LotteryId
+                }
+                
+                await axios
+                .post("http://localhost:8000/api/roomMember/", sendData)
+                .then(() => console.log("データベース登録完了"))
+                .catch(error => console.log(error));
+            }
+
+            alert("登録しました");
         }
     }
 }
@@ -301,7 +369,7 @@ form {
 }
 
 .input {
-  width: 60%;
+  width: 40%;
   padding: 0 5px;
   background-color: transparent;
   border: none;
@@ -314,14 +382,16 @@ form {
 }
 
 .input-select {
-    width: 60px;
+    width: 65px;
     padding: 0 5px;
     background-color: transparent;
     border: solid 2px #525252;
+    border-radius: 5px;
     outline: none !important;
     transition: all 0.4s;
+    font-size: 14px;
 }
 .input-select:hover {
-  border: solid 2px #3f51b5;
+    border: solid 2px #3f51b5;
 }
 </style>
