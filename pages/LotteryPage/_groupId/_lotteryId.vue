@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div class="lottery-info">
-            <div class="back-img"><NuxtLink to="/LotteryList"><h3>&lt;</h3></NuxtLink></div>
+            <div class="back-img"><NuxtLink :to="'/LotteryList/' + this.$route.params.groupId"><h3>&lt;</h3></NuxtLink></div>
             <h2 class="lottery-info-title">{{LotteryInfo.lottery_title}}</h2>
             <h3 class="lottery-info-day">期限： {{LotteryInfo.lottery_day}}</h3>
         </div>
@@ -81,6 +81,14 @@
             </div>
         </div>
         <!-- アコーディオンメニュー -->
+
+        <!-- アコーディオンメニュー -->
+        <div class="list" id="list3">
+            <h2 class="list-title" @click="listOpen(3)"><ListOpenIcon :text="list3Text" />抽選結果を表示</h2>
+            <div class="list-contents-big">
+            </div>
+        </div>
+        <!-- アコーディオンメニュー -->
     </div>
 </template>
 
@@ -101,6 +109,7 @@ export default {
             list0Text: '+',
             list1Text: '+',
             list2Text: '+',
+            list3Text: '+',
             inputNum: 2,
             LotteryId: null,
             LotteryInfo: [],
@@ -171,6 +180,13 @@ export default {
                         this.list2Text = '--'
                     } else {
                         this.list2Text = '+'
+                    }
+                    break;
+                case 3:
+                    if(this.list3Text == '+') {
+                        this.list3Text = '--'
+                    } else {
+                        this.list3Text = '+'
                     }
                     break;
             }

@@ -43,8 +43,27 @@
                 </label>
                 <label class="list-label">
                     <div class="list-input-box">抽選をする</div>
-                    <Btn text="実行"/>
+                    <Btn text="実行" @clickedFn="lottery" />
                 </label>
+                <div class="list-lottery">
+                    <div class="list-input-box">抽選結果</div>
+                    <div class="list-lottery-header">
+                        <h3 class="list-lottery-header-text">順位</h3>
+                        <h3 class="list-lottery-header-text">代表者</h3>
+                        <h3 class="list-lottery-header-text">学年</h3>
+                        <h3 class="list-lottery-header-text">状態</h3>
+                    </div>
+                    <div class="list-lottery-leader" v-for="item in lotteryMemberArr" :key="item.order">
+                        <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order">
+                        <h4 class="list-lottery-leader-text">{{item.order}}</h4>
+                        <h4 class="list-lottery-leader-text">{{item.name}}</h4>
+                        <h4 class="list-lottery-leader-text">{{item.schoolYear | otherYear}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join'">参加</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold'">保留</h4>
+                    </div>
+                    <div class="mtb"></div>
+                    <Btn text="当選者確定" @clickedFn="winning" />
+                </div>
                 <label class="list-label">
                     <div class="list-input-box">投票を削除</div>
                     <Btn text="削除" @clickedFn="deleteLottery" />
@@ -62,7 +81,7 @@
                 </label>
                 <label class="list-label">
                     <div class="list-input-box">アカウントを削除</div>
-                    <Btn text="削除" />
+                    <Btn text="削除" @clickedFn="accountDel" />
                 </label>
             </div>
         </div>
@@ -92,7 +111,9 @@ export default {
             firebase_id: null,
             LotteryName: null,
             LotteryDay: null,
-            lotteryTitleArr: []
+            lotteryTitleArr: [],
+            lotteryMemberArr: [],
+            renderVal: true
         }
     },
     mounted: async function() {
@@ -129,6 +150,24 @@ export default {
             this.lotteryTitleArr = response.data.data;
         })
         .catch(error => console.log(error));
+    },
+    filters: {
+        otherYear: function(value) {
+            if(value == 0) {
+                return '他'
+            } else {
+                return value;
+            }
+        }
+    },
+    computed: {
+        judgStatus: function(status) {
+            if(status == 'join') {
+                return true;
+            } else {
+                return false;
+            }
+        }
     },
     methods: {
         listOpen: function(num) {
@@ -209,6 +248,82 @@ export default {
 
             alert('投票を作成しました');
         },
+        lottery: async function() {
+            //抽選
+            const selectNum = document.formSelect.lotterySelect.selectedIndex;
+            const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
+
+            //メンバー情報を取得
+            let lotteryMembers = [];
+            let lotteryMemberAll = [];
+            await axios
+            .get("http://localhost:8000/api/roomMemberWhereRoomId/?room_id=" + LotteryId)
+            .then(response => {
+                console.log(response.data.data);
+                lotteryMemberAll = response.data.data;
+                response.data.data.forEach(element => {
+                    if(element.id == element.group_judg) {
+                        lotteryMembers.push(element.member_name);
+                    }
+                });
+            })
+            .catch(error => console.log(error));
+
+            //シャッフル
+            for(let i = (lotteryMembers.length-1); 0 < i; i--) {
+                let r = Math.floor(Math.random() * (i+1));
+
+                let tmp = lotteryMembers[i];
+                lotteryMembers[i] = lotteryMembers[r];
+                lotteryMembers[r] = tmp;
+            }
+
+            //オブジェクトへ変換
+            lotteryMembers.forEach((element, index) => {
+                let schoolYear;
+                let status
+                lotteryMemberAll.forEach(Element => {
+                    if(Element.member_name == element) {
+                        schoolYear = Element.school_year;
+                        status = Element.status;
+                    }
+                });
+                this.lotteryMemberArr[index] = {
+                    order: index + 1,
+                    name: element,
+                    schoolYear: schoolYear,
+                    status: status
+                }
+            });
+
+            //描画
+            this.listOpen(1);
+            this.listOpen(1);
+            document.querySelector('.list-lottery').classList.add('list-lottery-open');
+
+            alert("抽選が完了しました");
+        },
+        winning: async function() {
+            //当選者DB保存
+            const selectNum = document.formSelect.lotterySelect.selectedIndex;
+            const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
+
+            for(let i = 0; i < this.lotteryMemberArr.length; i++) {
+                if(document.querySelector('#lotteryCheckbox' + (i+1)).checked) {
+                    const sendData = {
+                        leader_name: this.lotteryMemberArr[i].name,
+                        order: this.lotteryMemberArr[i].order,
+                        room_id: LotteryId
+                    }
+                    await axios
+                    .post("http://localhost:8000/api/lotteryResult/", sendData)
+                    .then(() => console.log("データベース登録完了"))
+                    .catch(error => console.log(error));
+                }
+            }
+
+            alert('当選者を確定しました');
+        },
         deleteLottery: async function() {
             //抽選を削除
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
@@ -227,16 +342,31 @@ export default {
                 alert('ログアウトが完了しました');
                 this.$router.replace('/');
             });
+        },
+        accountDel: function() {
+            //アカウントを削除する
+            let result = confirm('アカウントを削除しますか？\n削除すると復元する事はできません');
+            if(result) {
+                const user = firebase.auth().currentUser;
+                user.delete().then(() => {
+                    alert('アカウントを削除しました');
+                    this.$router.replace('/');
+                }).catch(error => console.log(error));
+            } else {
+                return;
+            }
         }
     }
 }
 </script>
 
-
 <style scoped>
 a {
     text-decoration: none;
     color: #3f51b5;
+}
+.mtb {
+    margin: 35px 0;
 }
 .back-img {
     position: absolute;
@@ -337,6 +467,44 @@ a {
 .list-input-Btn-clicked {
     background-color: #3f51b5;
     color: #fff;
+}
+
+.list-lottery {
+    display: none;
+    opacity: 0;
+    margin-bottom: 30px;
+    padding: 10px 0;
+    background-color: #44968e;
+}
+.list-lottery-open.list-lottery {
+    display: block;
+    opacity: 1.0;
+}
+.list-lottery-header {
+    display: flex;
+    justify-content: space-around;
+    border-bottom: solid 2px #3f51b5;
+}
+.list-lottery-header-text {
+    font-size: 15px;
+    font-weight: normal;
+    width: 25%;
+}
+.list-lottery-leader {
+    position: relative;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-around;
+}
+.list-lottery-leader-text {
+    font-size: 15px;
+    font-weight: normal;
+    width: 25%;
+}
+
+.list-lottery-leader-check {
+    position: absolute;
+    left: 10px;
 }
 
 .input {

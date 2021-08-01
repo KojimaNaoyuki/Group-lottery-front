@@ -7,7 +7,7 @@
         <div class="card" v-for="item in LotteryArr" :key="item.id">
             <h3 class="card-title">{{item.lottery_title}}</h3>
             <h4 class="card-day">期限： {{item.lottery_day}}</h4>
-            <Btn text="投票"/>
+            <Btn text="確認" @clickedFn="toLotteryPage(item.id)"/>
             <div class="card-status" v-if="item.public_private_info">受付中</div>
             <div class="card-status-stop" v-if="!item.public_private_info">受付停止</div>
         </div>
@@ -62,6 +62,11 @@ export default {
             this.LotteryArr = response.data.data;
         })
         .catch(error => console.log(error));
+    },
+    methods: {
+        toLotteryPage: function(id) {
+            this.$router.push('/LotteryPage/' + this.$route.params.groupId + '/' + id);
+        }
     }
 }
 </script>

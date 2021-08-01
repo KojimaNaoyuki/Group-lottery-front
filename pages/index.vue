@@ -204,8 +204,8 @@ export default {
     },
     login: async function() {
       if(!this.loginEmail || !this.loginPassword) {
-        alert('メールアドレスまたはパスワードが入力されていません。')
-        return
+        alert('メールアドレスまたはパスワードが入力されていません。');
+        return;
       }
 
       firebase
@@ -214,6 +214,7 @@ export default {
       .then(() => {
         this.$router.push('/ManagementPage/' + this.groupInputId);
       })
+      .catch(error => console.log(error));
     },
 
     ToLotteryList: function() {
