@@ -86,6 +86,14 @@
         <div class="list" id="list3">
             <h2 class="list-title" @click="listOpen(3)"><ListOpenIcon :text="list3Text" />抽選結果を表示</h2>
             <div class="list-contents-big">
+                <div class="member-list">
+                    <div class="member-list-header">
+                        <h3>当選者名</h3>
+                    </div>
+                </div>
+                <div class="member-list-contents" v-for="item in memberWinnerArr" :key="item.id">
+                    <h4>{{item.leader_name}}</h4>
+                </div>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -114,7 +122,8 @@ export default {
             LotteryId: null,
             LotteryInfo: [],
             inputName: [],
-            memberArr: []
+            memberArr: [],
+            memberWinnerArr: []
         }
     },
     mounted: async function() {
@@ -134,6 +143,15 @@ export default {
         .get("http://localhost:8000/api/roomMemberWhereRoomId/?room_id=" + this.LotteryId)
         .then(response => {
             this.memberArr = response.data.data;
+        })
+        .catch(error => console.log(error));
+
+        //当選者を取得
+        await axios
+        .get("http://localhost:8000/api/LotteryResultWhereRoomId/?room_id=" + this.LotteryId)
+        .then(response=> {
+            console.log(response.data.data);
+            this.memberWinnerArr = response.data.data;
         })
         .catch(error => console.log(error));
     },
