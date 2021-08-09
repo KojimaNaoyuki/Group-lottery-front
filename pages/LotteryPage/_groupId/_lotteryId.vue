@@ -91,8 +91,10 @@
                         <h3>当選者名</h3>
                     </div>
                 </div>
-                <div class="member-list-contents" v-for="item in memberWinnerArr" :key="item.id">
-                    <h4>{{item.leader_name}}</h4>
+                <div class="member-list-contents-block" v-for="itemWrap in memberWinnerArr" :key="itemWrap.id">
+                    <div class="member-list-contents-group">
+                        <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
+                    </div>
                 </div>
             </div>
         </div>
@@ -152,14 +154,38 @@ export default {
         })
         .catch(error => console.log(error));
 
+
         //当選者を取得
+        //当選者リーダーを取得
+        let leaderWinnerArr;
         await axios
-        .get("http://localhost:8000/api/LotteryResultWhereRoomId/?room_id=" + this.LotteryId)
-        .then(response=> {
-            console.log(response.data.data);
-            this.memberWinnerArr = response.data.data;
+        .get("http://localhost:8000/api/LotteryResultGetLotteryResultMember/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+        .then(response => {
+            leaderWinnerArr = response.data.data;
         })
         .catch(error => console.log(error));
+
+        //リーダ名から当選者IDを取得
+        let leaderWinnerIdArr = [];
+        for(let i = 0; i < leaderWinnerArr.length; i++) {
+            await axios
+            .get("http://localhost:8000/api/roomMemberGetLeaderId/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&member_name=" + leaderWinnerArr[i].leader_name)
+            .then(response => {
+                leaderWinnerIdArr.push(response.data.data);
+            })
+            .catch(error => console.log(error));
+        }
+
+        //リーダIDから当選者全体を取得
+        for(let i = 0; i < leaderWinnerIdArr.length; i++) {
+            await axios
+            .get("http://localhost:8000/api/getMemmberWhereJudg/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&group_judg=" + leaderWinnerIdArr[i][0].id)
+            .then(response => {
+                this.memberWinnerArr.push(response.data.data);
+            })
+            .catch(error => console.log(error));
+        }
+        console.log(this.memberWinnerArr);
     },
     filters: {
         otherYear: function(value) {
@@ -360,6 +386,10 @@ form {
     display: inline;
 }
 
+.block {
+    display: block;
+}
+
 .lottery-info {
     position: relative;
     padding: 0 0 20px 0;
@@ -453,6 +483,22 @@ form {
     padding: 5px 0;
     font-size: 14px;
     font-weight: normal;
+}
+.member-list-contents-block {
+    position: relative;
+    text-align: center;
+}
+.member-list-contents-block > h4 {
+    width: 33%;
+    height: 31px;
+    padding: 5px 0;
+    font-size: 14px;
+    font-weight: normal;
+}
+.member-list-contents-group {
+    margin: 15px 20px;
+    background-color: #44968e;
+    border-radius: 3px;
 }
 .leader-icon {
     position: absolute;

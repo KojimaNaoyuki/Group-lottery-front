@@ -257,7 +257,7 @@ export default {
             let lotteryMembers = [];
             let lotteryMemberAll = [];
             await axios
-            .get("http://localhost:8000/api/roomMemberWhereRoomId/?room_id=" + LotteryId)
+            .get("http://localhost:8000/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
             .then(response => {
                 console.log(response.data.data);
                 lotteryMemberAll = response.data.data;
@@ -313,6 +313,7 @@ export default {
                     const sendData = {
                         leader_name: this.lotteryMemberArr[i].name,
                         order: this.lotteryMemberArr[i].order,
+                        group_id: this.dbGroupId,
                         room_id: LotteryId
                     }
                     await axios
