@@ -120,6 +120,7 @@ export default {
             list3Text: '+',
             inputNum: 2,
             LotteryId: null,
+            GroupId: null,
             LotteryInfo: [],
             inputName: [],
             memberArr: [],
@@ -127,6 +128,11 @@ export default {
         }
     },
     mounted: async function() {
+        //グループIDを取得
+        let groupId =  this.$route.params.groupId;
+        let groupIdLength = groupId.length-4;
+        this.GroupId = Number(groupId.slice(0, groupIdLength));
+
         //抽選IDを取得
         this.LotteryId = Number(this.$route.params.lotteryId);
 
@@ -140,7 +146,7 @@ export default {
 
         //メンバーを取得
         await axios
-        .get("http://localhost:8000/api/roomMemberWhereRoomId/?room_id=" + this.LotteryId)
+        .get("http://localhost:8000/api/roomMemberGetmemmber/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
         .then(response => {
             this.memberArr = response.data.data;
         })
@@ -216,6 +222,22 @@ export default {
         registerMember: async function() {
             //メンバー登録
 
+            //同一名で登録されていないか確認
+            //DB登録済み名チェック
+            let ValidationFlag = true;
+            await axios
+            .get("http://localhost:8000/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+            .then(response => {
+                if(response.data.data == 'false') {
+                    ValidationFlag = false;
+                }
+            })
+            .catch(error => console.log(error));
+            if(!ValidationFlag) {
+                alert('同じ名前が使用されています');
+                return;
+            }
+
             //代表者のIDを取得
             let leaderId;
             await axios
@@ -238,9 +260,10 @@ export default {
                 school_year: schoolYear,
                 status: status,
                 group_judg: leaderId,
+                group_id: this.GroupId,
                 room_id: this.LotteryId
             }
-            console.log(sendData);
+
             await axios
             .post("http://localhost:8000/api/roomMember/", sendData)
             .then(() => console.log("データベース登録完了"))
@@ -250,6 +273,38 @@ export default {
         },
         registerMemberMulti: async function() {
             //メンバー登録 複数人
+
+            //同一名で登録されていないか確認
+            //フロント側インプットボックス
+            let ValidationFlag = true;
+            this.inputName.forEach((element, index, arr) => {
+                for(let i = 0; i < arr.length; i++) {
+                    if(index != i) {
+                        if(element == arr[i]) {
+                            ValidationFlag = false;
+                        }
+                    }
+                }
+            });
+            if(!ValidationFlag) {
+                alert('同じ名前が使用されています');
+                return;
+            }
+            //DB登録済み名チェック
+            for(let i = 1; i < this.inputName.length; i++) {
+                await axios
+                .get("http://localhost:8000/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+                .then(response => {
+                    if(response.data.data == 'false') {
+                        ValidationFlag = false;
+                    }
+                })
+                .catch(error => console.log(error));
+            }
+            if(!ValidationFlag) {
+                alert('同じ名前が使用されています');
+                return;
+            }
 
             //代表者のIDを取得
             let leaderId;
@@ -280,6 +335,7 @@ export default {
                     school_year: schoolYear,
                     status: status,
                     group_judg: leaderId,
+                    group_id: this.GroupId,
                     room_id: this.LotteryId
                 }
                 
