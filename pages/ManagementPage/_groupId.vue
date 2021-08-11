@@ -50,14 +50,14 @@
                     <div class="list-input-box">抽選結果</div>
                     <div class="list-lottery-header">
                         <h3 class="list-lottery-header-text">順位</h3>
-                        <h3 class="list-lottery-header-text">代表者</h3>
+                        <h3 class="list-lottery-header-text">代表(人数)</h3>
                         <h3 class="list-lottery-header-text">学年</h3>
                         <h3 class="list-lottery-header-text">状態</h3>
                     </div>
                     <div class="list-lottery-leader" v-for="item in lotteryMemberArr" :key="item.order">
                         <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order" v-if="!item.del_flag">
                         <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.order}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.name}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.name}}({{item.member_num}})</h4>
                         <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.schoolYear | otherYear}}</h4>
                         <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
                         <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
@@ -282,11 +282,17 @@ export default {
             //メンバー情報を取得
             let lotteryMembers = [];
             let lotteryMemberAll = [];
+            let memberNum = [];
             await axios
             .get("http://localhost:8000/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
             .then(response => {
-                console.log(response.data.data);
+                //メンバー全体を取得
                 lotteryMemberAll = response.data.data;
+
+                //代表者ごとメンバー人数取得
+                memberNum = response.data.memberNum;
+
+                //代表者だけを抽出
                 response.data.data.forEach(element => {
                     if(element.id == element.group_judg && !element.del_flag) {
                         lotteryMembers.push(element.member_name);
@@ -307,7 +313,7 @@ export default {
             //オブジェクトへ変換
             lotteryMembers.forEach((element, index) => {
                 let schoolYear;
-                let status
+                let status;
                 lotteryMemberAll.forEach(Element => {
                     if(Element.member_name == element) {
                         schoolYear = Element.school_year;
@@ -318,9 +324,12 @@ export default {
                     order: index + 1,
                     name: element,
                     schoolYear: schoolYear,
-                    status: status
+                    status: status,
+                    member_num: memberNum[element].member_num
                 }
             });
+
+            console.log(this.lotteryMemberArr);
 
             //描画
             this.listOpen(1);
