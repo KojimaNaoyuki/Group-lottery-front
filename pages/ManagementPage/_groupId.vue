@@ -37,13 +37,14 @@
                         </select>
                     </form>
                 </label>
+
                 <label class="list-label">
                     <div class="list-input-box">抽選受付状態</div>
                     <div class="btnBox"><button id="LotteryStatusBtnTrue" class="list-input-Btn" @click="LotteryStatus(true)">受け付ける</button><button id="LotteryStatusBtnFalse" class="list-input-Btn" @click="LotteryStatus(false)">受け付けない</button></div>
                 </label>
+
                 <label class="list-label">
-                    <div class="list-input-box">抽選をする</div>
-                    <Btn text="実行" @clickedFn="lottery" />
+                    <Btn text="抽選する" @clickedFn="lottery" />
                 </label>
                 <div class="list-lottery">
                     <div class="list-input-box">抽選結果</div>
@@ -54,16 +55,40 @@
                         <h3 class="list-lottery-header-text">状態</h3>
                     </div>
                     <div class="list-lottery-leader" v-for="item in lotteryMemberArr" :key="item.order">
-                        <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order">
-                        <h4 class="list-lottery-leader-text">{{item.order}}</h4>
-                        <h4 class="list-lottery-leader-text">{{item.name}}</h4>
-                        <h4 class="list-lottery-leader-text">{{item.schoolYear | otherYear}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join'">参加</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold'">保留</h4>
+                        <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order" v-if="!item.del_flag">
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.order}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.name}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.schoolYear | otherYear}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
                     </div>
                     <div class="mtb"></div>
                     <Btn text="当選者確定" @clickedFn="winning" />
                 </div>
+
+                <label class="list-label">
+                    <div class="list-input-box">抽選登録メンバーを削除する</div>
+                    <Btn text="メンバーを表示" @clickedFn="delMemberDisplay" />
+                </label>
+                <div class="list-del-member">
+                    <div class="list-input-box">登録メンバー</div>
+                    <div class="list-lottery-header">
+                        <h3 class="list-lottery-header-text">名前</h3>
+                        <h3 class="list-lottery-header-text">学年</h3>
+                        <h3 class="list-lottery-header-text">状態</h3>
+                    </div>
+                    <div class="list-lottery-leader" v-for="item in delMemberArr" :key="item.id">
+                        <input type="checkbox" class="list-lottery-leader-check" :id="'delCheckbox' + item.id" v-if="!item.del_flag">
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.member_name}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
+                        <div class="list-lottery-leader-text" v-if="item.del_flag">削除済み</div>
+                    </div>
+                    <div class="mtb"></div>
+                    <Btn text="削除" @clickedFn="delMember" />
+                </div>
+
                 <label class="list-label">
                     <div class="list-input-box">投票を削除</div>
                     <Btn text="削除" @clickedFn="deleteLottery" />
@@ -113,7 +138,8 @@ export default {
             LotteryDay: null,
             lotteryTitleArr: [],
             lotteryMemberArr: [],
-            renderVal: true
+            renderVal: true,
+            delMemberArr: []
         }
     },
     mounted: async function() {
@@ -262,7 +288,7 @@ export default {
                 console.log(response.data.data);
                 lotteryMemberAll = response.data.data;
                 response.data.data.forEach(element => {
-                    if(element.id == element.group_judg) {
+                    if(element.id == element.group_judg && !element.del_flag) {
                         lotteryMembers.push(element.member_name);
                     }
                 });
@@ -324,6 +350,44 @@ export default {
             }
 
             alert('当選者を確定しました');
+        },
+        delMemberDisplay: async function() {
+            //抽選登録者削除処理 メンバー取得
+            const selectNum = document.formSelect.lotterySelect.selectedIndex;
+            const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
+
+            await axios
+            .get("http://localhost:8000/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            .then(response => {
+                this.delMemberArr = response.data.data;
+                console.log(this.delMemberArr);
+            })
+            .catch(error => console.log(error));
+
+            //描画
+            this.listOpen(1);
+            this.listOpen(1);
+            document.querySelector('.list-del-member').classList.add('list-open');
+        },
+        delMember: async function() {
+            //メンバーの削除処理 DB
+
+            //↓未完成(バックエンド側に問題あり idが届いてなくて更新できず)
+            let sendData;
+            for(let i = 0; i < this.delMemberArr.length; i++) {
+                if(document.querySelector('#delCheckbox' + (this.delMemberArr[i].id)).checked) {
+                    sendData = {
+                        id: this.delMemberArr[i].id,
+                        del_flag: true
+                    }
+                    await axios
+                    .put("http://localhost:8000/api/roomMember/" + this.delMemberArr[i].id, sendData)
+                    .then(() => console.log('更新が完了しました'))
+                    .catch(error => console.log(error));
+                }
+            }
+
+            alert('削除しました');
         },
         deleteLottery: async function() {
             //抽選を削除
@@ -506,6 +570,18 @@ a {
 .list-lottery-leader-check {
     position: absolute;
     left: 10px;
+}
+
+.list-del-member {
+    display: none;
+    opacity: 0;
+    margin-bottom: 30px;
+    padding: 10px 0;
+    background-color: #44968e;
+}
+.list-open.list-del-member {
+    display: block;
+    opacity: 1.0;
 }
 
 .input {

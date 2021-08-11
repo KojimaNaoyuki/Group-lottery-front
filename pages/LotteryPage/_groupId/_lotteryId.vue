@@ -18,10 +18,11 @@
                 </div>
                 <div class="member-list-contents" v-for="item in memberArr" :key="item.id">
                     <div class="leader-icon" v-if="item.id == item.group_judg"></div>
-                    <h4>{{item.member_name}}</h4>
-                    <h4>{{item.school_year | otherYear}}</h4>
-                    <h4 v-if="item.status == 'join'">参加</h4>
-                    <h4 v-if="item.status == 'hold'">保留</h4>
+                    <h4 v-if="!item.del_flag">{{item.member_name}}</h4>
+                    <h4 v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
+                    <h4 v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                    <h4 v-if="item.status == 'hold' && !item.del_flag">保留</h4>
+                    <h4 v-if="item.del_flag">削除済み</h4>
                 </div>
             </div>
         </div>
@@ -287,7 +288,8 @@ export default {
                 status: status,
                 group_judg: leaderId,
                 group_id: this.GroupId,
-                room_id: this.LotteryId
+                room_id: this.LotteryId,
+                del_flag: false
             }
 
             await axios
@@ -362,7 +364,8 @@ export default {
                     status: status,
                     group_judg: leaderId,
                     group_id: this.GroupId,
-                    room_id: this.LotteryId
+                    room_id: this.LotteryId,
+                    del_flag: false
                 }
                 
                 await axios
