@@ -24,6 +24,8 @@
                     <h4 v-if="item.status == 'hold' && !item.del_flag">保留</h4>
                     <h4 v-if="item.del_flag">削除済み</h4>
                 </div>
+
+                <DownArrow />
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -32,24 +34,29 @@
         <div class="list" id="list1">
             <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />一人で参加</h2>
             <div class="list-contents">
-                <label class="input-box">
-                    名前&ensp;
-                    <input type="text" class="input" placeholder="入力" v-model="inputName[0]">
-                    <form name="formSelect">
-                        <select name="year" class="input-select">
-                            <option value="1">1年</option>
-                            <option value="2">2年</option>
-                            <option value="3">3年</option>
-                            <option value="4">4年</option>
-                            <option value="0">他</option>
-                        </select>
-                        <select name="status" class="input-select">
-                            <option value="join">参加</option>
-                            <option value="hold">保留</option>
-                        </select>
-                    </form>
-                </label>
-                <Btn text="登録" class="list-btn" @clickedFn="registerMember" />
+                <validation-observer ref="obs" v-slot="ObserverProps">
+                    <label class="input-box">
+                        <validation-provider v-slot="ProviderProps" rules="required">
+                            名前&ensp;
+                            <input type="text" class="input" placeholder="入力" v-model="inputName[0]" name="名前">
+                            <form name="formSelect">
+                                <select name="year" class="input-select">
+                                    <option value="1">1年</option>
+                                    <option value="2">2年</option>
+                                    <option value="3">3年</option>
+                                    <option value="4">4年</option>
+                                    <option value="0">他</option>
+                                </select>
+                                <select name="status" class="input-select">
+                                    <option value="join">参加</option>
+                                    <option value="hold">保留</option>
+                                </select>
+                            </form>
+                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                        </validation-provider>
+                    </label>
+                    <Btn text="登録" class="list-btn" @clickedFn="registerMember" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                </validation-observer>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -58,27 +65,32 @@
         <div class="list" id="list2">
             <h2 class="list-title" @click="listOpen(2)"><ListOpenIcon :text="list2Text" />複数人で参加</h2>
             <div class="list-contents-big">
-                <label class="input-box" v-for="n in inputNum" :key="n">
-                    名前&ensp;
-                    <input type="text" class="input" placeholder="入力" v-model="inputName[n]">
-                    <form :name="'formSelect' + n">
-                        <select :name="'year' + n" class="input-select">
-                            <option value="1">1年</option>
-                            <option value="2">2年</option>
-                            <option value="3">3年</option>
-                            <option value="4">4年</option>
-                            <option value="0">他</option>
-                        </select>
-                        <select :name="'status' + n" class="input-select">
-                            <option value="join">参加</option>
-                            <option value="hold">保留</option>
-                        </select>
-                    </form>
-                </label>
+                <validation-observer ref="obs" v-slot="ObserverProps">
+                    <label class="input-box" v-for="n in inputNum" :key="n">
+                        <validation-provider v-slot="ProviderProps" rules="required">
+                            名前&ensp;
+                            <input type="text" class="input" placeholder="入力" v-model="inputName[n]" name="名前">
+                            <form :name="'formSelect' + n">
+                                <select :name="'year' + n" class="input-select">
+                                    <option value="1">1年</option>
+                                    <option value="2">2年</option>
+                                    <option value="3">3年</option>
+                                    <option value="4">4年</option>
+                                    <option value="0">他</option>
+                                </select>
+                                <select :name="'status' + n" class="input-select">
+                                    <option value="join">参加</option>
+                                    <option value="hold">保留</option>
+                                </select>
+                            </form>
+                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                        </validation-provider>
+                    </label>
 
-                <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
+                    <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
 
-                <Btn text="登録" class="list-btn" @clickedFn="registerMemberMulti" />
+                    <Btn text="登録" class="list-btn" @clickedFn="registerMemberMulti" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                </validation-observer>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -97,6 +109,8 @@
                         <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
                     </div>
                 </div>
+
+                <DownArrow />
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -108,12 +122,15 @@ import axios from "axios";
 import ListOpenIcon from './../../../components/presentational/atoms/ListOpenIcon.vue';
 import Input from './../../../components/presentational/atoms/Input.vue';
 import Btn from './../../../components/presentational/atoms/Btn.vue';
+import DownArrow from './../../../components/presentational/atoms/DownArrow.vue';
+
 export default {
     layout: 'deepPageLayout',
     components: {
         ListOpenIcon,
         Input,
-        Btn
+        Btn,
+        DownArrow
     },
     data() {
         return {
@@ -186,7 +203,6 @@ export default {
             })
             .catch(error => console.log(error));
         }
-        console.log(this.memberWinnerArr);
     },
     filters: {
         otherYear: function(value) {
@@ -249,6 +265,12 @@ export default {
         registerMember: async function() {
             //メンバー登録
 
+            //投票状態チェック
+            if(!this.LotteryInfo.public_private_info) {
+                alert('この抽選は受付停止してます');
+                return;
+            }
+
             //同一名で登録されていないか確認
             //DB登録済み名チェック
             let ValidationFlag = true;
@@ -301,6 +323,12 @@ export default {
         },
         registerMemberMulti: async function() {
             //メンバー登録 複数人
+
+            //投票状態チェック
+            if(!this.LotteryInfo.public_private_info) {
+                alert('この抽選は受付停止してます');
+                return;
+            }
 
             //同一名で登録されていないか確認
             //フロント側インプットボックス
@@ -416,6 +444,7 @@ form {
 }
 
 .list {
+    position: relative;
     padding: 20px;
     background-color: #44968e;
 }
@@ -499,9 +528,14 @@ form {
     font-weight: normal;
 }
 .member-list-contents-group {
+    padding: 5px 0;
     margin: 15px 20px;
     background-color: #44968e;
     border-radius: 3px;
+}
+.member-list-contents-group > h4 {
+    font-size: 14px;
+    font-weight: normal;
 }
 .leader-icon {
     position: absolute;
@@ -554,5 +588,12 @@ form {
 }
 .input-select:hover {
     border: solid 2px #3f51b5;
+}
+
+.error-ms {
+  padding: 5px 10px 0;
+  text-align: right;
+  font-size: 14px;
+  color: #a73f1e;
 }
 </style>

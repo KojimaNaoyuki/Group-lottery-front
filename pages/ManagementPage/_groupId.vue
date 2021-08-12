@@ -10,17 +10,27 @@
         <div class="list" id="list0">
             <h2 class="list-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />投票を作成</h2>
             <div class="list-contents-big">
-                <label class="list-label">
-                    <div class="list-input-box">抽選名</div>
-                    <input type="text" placeholder="入力" class="input" v-model="LotteryName">
-                </label>
-                <label class="list-label">
-                    <div class="list-input-box">抽選登録〆切日</div>
-                    <div class="list-day">
-                        <input type="date" class="input" v-model="LotteryDay">
-                    </div>
-                </label>
-                <Btn text="作成" @clickedFn="createLottery"/>
+                <validation-observer ref="obs" v-slot="ObserverProps">
+                    <validation-provider v-slot="ProviderProps" rules="required">
+                        <label class="list-label">
+                            <div class="list-input-box">抽選名</div>
+                            <input type="text" placeholder="入力" class="input" v-model="LotteryName" name="抽選名">
+                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                        </label>
+                    </validation-provider>
+
+                    <validation-provider v-slot="ProviderProps" rules="required">
+                        <label class="list-label">
+                            <div class="list-input-box">抽選登録〆切日</div>
+                            <div class="list-day">
+                                <input type="date" class="input" v-model="LotteryDay" name="〆切日">
+                            </div>
+                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                        </label>
+                    </validation-provider>
+
+                    <Btn text="作成" @clickedFn="createLottery" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                </validation-observer>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -93,6 +103,8 @@
                     <div class="list-input-box">投票を削除</div>
                     <Btn text="削除" @clickedFn="deleteLottery" />
                 </label>
+
+                <DownArrow />
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -119,12 +131,14 @@ import axios from "axios";
 import firebase from '~/plugins/firebase';
 import ListOpenIcon from './../../components/presentational/atoms/ListOpenIcon.vue';
 import Btn from './../../components/presentational/atoms/Btn.vue';
+import DownArrow from './../../components/presentational/atoms/DownArrow.vue';
 
 export default {
     layout: 'deepPageLayout',
     components: {
         ListOpenIcon,
-        Btn
+        Btn,
+        DownArrow
     },
     data() {
         return {
@@ -172,7 +186,6 @@ export default {
         await axios
         .get("http://localhost:8000/api/roomCustom?group_id=" + this.dbGroupId)
         .then(response => {
-            console.log(response.data.data);
             this.lotteryTitleArr = response.data.data;
         })
         .catch(error => console.log(error));
@@ -279,6 +292,21 @@ export default {
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
+            //抽選済みかどうかチェック
+            let alreadyLotteryFlag = false;
+            await axios
+            .get("http://localhost:8000/api/LotteryResultValidationAlready/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            .then(response => {
+                if(!response.data.data) {
+                    alreadyLotteryFlag = true;
+                }
+            })
+            .catch(error => console.log(error));
+            if(alreadyLotteryFlag) {
+                alert('すでに抽選が行われています');
+                return;
+            }
+
             //メンバー情報を取得
             let lotteryMembers = [];
             let lotteryMemberAll = [];
@@ -358,6 +386,15 @@ export default {
                 }
             }
 
+            //抽選非公開へ
+            const sendData = {
+                public_private_info: false
+            }
+            await axios
+            .put("http://localhost:8000/api/room/" + LotteryId, sendData)
+            .then(() => console.log('更新が完了しました'))
+            .catch(error => console.log(error));
+
             alert('当選者を確定しました');
         },
         delMemberDisplay: async function() {
@@ -400,6 +437,11 @@ export default {
         },
         deleteLottery: async function() {
             //抽選を削除
+            let confirmResult = confirm('抽選を削除しますか？\n削除すると復元できません');
+            if(!confirmResult) {
+                return;
+            }
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
@@ -412,8 +454,12 @@ export default {
         },
         logout: function() {
             //ログアウト
+            let confirmResult = confirm('ログアウトしますか？\n再度ログインが必要になります');
+            if(!confirmResult) {
+                return;
+            }
+
             firebase.auth().signOut().then(() => {
-                alert('ログアウトが完了しました');
                 this.$router.replace('/');
             });
         },
@@ -469,6 +515,7 @@ a {
 }
 
 .list {
+    position: relative;
     padding: 20px;
     background-color: #44968e;
 }
@@ -604,5 +651,12 @@ a {
 }
 .input:hover {
   border-bottom: solid 2px #3f51b5;
+}
+
+.error-ms {
+  padding: 5px 10px 0;
+  text-align: right;
+  font-size: 14px;
+  color: #a73f1e;
 }
 </style>

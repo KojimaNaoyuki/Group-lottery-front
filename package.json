@@ -13,7 +13,8 @@
     "core-js": "^3.9.1",
     "firebase": "^8.7.1",
     "nuxt": "^2.15.3",
-    "save": "^2.4.0"
+    "save": "^2.4.0",
+    "vee-validate": "^3.4.11"
   },
   "devDependencies": {}
 }
