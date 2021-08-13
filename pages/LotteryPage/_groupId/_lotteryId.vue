@@ -114,6 +114,18 @@
             </div>
         </div>
         <!-- アコーディオンメニュー -->
+
+        <div class="rod-back"></div>
+        <div class="rod-animation">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 </template>
 
@@ -148,6 +160,8 @@ export default {
         }
     },
     mounted: async function() {
+        this.loaderDisplay(true); //ローダー開始
+
         //グループIDを取得
         let groupId =  this.$route.params.groupId;
         let groupIdLength = groupId.length-4;
@@ -203,6 +217,8 @@ export default {
             })
             .catch(error => console.log(error));
         }
+
+        this.loaderDisplay(false); //ローダー終了
     },
     filters: {
         otherYear: function(value) {
@@ -271,6 +287,8 @@ export default {
                 return;
             }
 
+            this.loaderDisplay(true); //ローダーを開始
+
             //同一名で登録されていないか確認
             //DB登録済み名チェック
             let ValidationFlag = true;
@@ -283,6 +301,7 @@ export default {
             })
             .catch(error => console.log(error));
             if(!ValidationFlag) {
+                this.loaderDisplay(false); //ローダー終了
                 alert('同じ名前が使用されています');
                 return;
             }
@@ -319,6 +338,8 @@ export default {
             .then(() => console.log("データベース登録完了"))
             .catch(error => console.log(error));
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert('登録しました');
         },
         registerMemberMulti: async function() {
@@ -346,6 +367,9 @@ export default {
                 alert('同じ名前が使用されています');
                 return;
             }
+
+            this.loaderDisplay(true); //ローダーを開始
+
             //DB登録済み名チェック
             for(let i = 1; i < this.inputName.length; i++) {
                 await axios
@@ -358,6 +382,7 @@ export default {
                 .catch(error => console.log(error));
             }
             if(!ValidationFlag) {
+                this.loaderDisplay(false); //ローダー終了
                 alert('同じ名前が使用されています');
                 return;
             }
@@ -402,7 +427,19 @@ export default {
                 .catch(error => console.log(error));
             }
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert("登録しました");
+        },
+        loaderDisplay: function(state) {
+            //ローダーの表示
+            const tg = document.querySelector('#global-contents');
+
+            if(state) {
+                tg.classList.add('rod-on');  
+            } else {
+                tg.classList.remove('rod-on');
+            }
         }
     }
 }

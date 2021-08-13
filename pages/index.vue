@@ -1,5 +1,5 @@
 <template>
-  <div class="box">
+  <div class="box" id="indexContent">
     <div class="wrap">
       <section class="card">
         <validation-observer ref="obs" v-slot="ObserverProps">
@@ -94,6 +94,18 @@
       </section>
       <!-- アコーディオンメニュー -->
     </div>
+
+    <div class="rod-back"></div>
+    <div class="rod-animation">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 </template>
 
@@ -168,6 +180,8 @@ export default {
         return;
       }
 
+      this.loaderDisplay(true); //ローダを開始
+
       //最後に登録されているグループidを取得
       let lastedId = 0;
       await axios
@@ -215,6 +229,7 @@ export default {
       });
 
       if(!firebaseOk) {
+        this.loaderDisplay(false); //ローダを終了
         return
       }
 
@@ -239,9 +254,12 @@ export default {
       })
       .catch(error => console.log('エラー: ' + error));
 
+      this.loaderDisplay(false); //ローダを終了
+
       alert('アカウントを作成しました\nグループIDは ' + groupId + ' です');
     },
     login: async function() {
+      //ログイン
       if(!this.loginEmail || !this.loginPassword) {
         alert('メールアドレスまたはパスワードが入力されていません。');
         return;
@@ -258,6 +276,17 @@ export default {
 
     ToLotteryList: function() {
       this.$router.push('/LotteryList/' + this.groupInputId);
+    },
+
+    loaderDisplay: function(state) {
+      //ローダーの表示
+      const tg = document.querySelector('#global-contents');
+
+      if(state) {
+        tg.classList.add('rod-on');  
+      } else {
+        tg.classList.remove('rod-on');
+      }
     }
   }
 };
@@ -272,7 +301,6 @@ export default {
 }
 
 .box {
-  position: relative;
   height: 100vh;
 }
 

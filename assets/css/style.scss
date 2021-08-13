@@ -1,3 +1,4 @@
+//矢印
 .Arrow-animation {
   animation: kf-Arrow-animation 2s;
   animation-iteration-count: infinite;
@@ -12,4 +13,59 @@
   100% {
     transform: translateY(0);
   }
+}
+
+//ローダー
+$elementNum: 8; //span要素の数
+.rod-animation {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+
+  & > span {
+    display: inline-block;
+    width: 5px;
+    height: 45px;
+    background-color: #a9b6ff;
+
+    animation: kf-rod-animation 1.3s;
+    animation-iteration-count: infinite;
+
+    @for $i from 1 through $elementNum {
+      &:nth-child(#{$i}) {
+        animation-delay: 0.1s * $i;
+      }
+    }
+  }
+}
+.rod-on .rod-animation {
+  display: block;
+}
+@keyframes kf-rod-animation {
+  0% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.6);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+.rod-back {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.4;
+  width: 100vw;
+  height: 100vh;
+  z-index: 500;
+}
+.rod-on .rod-back {
+  display: block;
 }

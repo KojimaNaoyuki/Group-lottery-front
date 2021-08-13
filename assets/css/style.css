@@ -34,4 +34,115 @@
             transform: translateY(0);
   }
 }
+
+.rod-animation {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.rod-animation > span {
+  display: inline-block;
+  width: 5px;
+  height: 45px;
+  background-color: #a9b6ff;
+  -webkit-animation: kf-rod-animation 1.3s;
+          animation: kf-rod-animation 1.3s;
+  -webkit-animation-iteration-count: infinite;
+          animation-iteration-count: infinite;
+}
+
+.rod-animation > span:nth-child(1) {
+  -webkit-animation-delay: 0.1s;
+          animation-delay: 0.1s;
+}
+
+.rod-animation > span:nth-child(2) {
+  -webkit-animation-delay: 0.2s;
+          animation-delay: 0.2s;
+}
+
+.rod-animation > span:nth-child(3) {
+  -webkit-animation-delay: 0.3s;
+          animation-delay: 0.3s;
+}
+
+.rod-animation > span:nth-child(4) {
+  -webkit-animation-delay: 0.4s;
+          animation-delay: 0.4s;
+}
+
+.rod-animation > span:nth-child(5) {
+  -webkit-animation-delay: 0.5s;
+          animation-delay: 0.5s;
+}
+
+.rod-animation > span:nth-child(6) {
+  -webkit-animation-delay: 0.6s;
+          animation-delay: 0.6s;
+}
+
+.rod-animation > span:nth-child(7) {
+  -webkit-animation-delay: 0.7s;
+          animation-delay: 0.7s;
+}
+
+.rod-animation > span:nth-child(8) {
+  -webkit-animation-delay: 0.8s;
+          animation-delay: 0.8s;
+}
+
+.rod-on .rod-animation {
+  display: block;
+}
+
+@-webkit-keyframes kf-rod-animation {
+  0% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+  50% {
+    -webkit-transform: scaleY(0.6);
+            transform: scaleY(0.6);
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+
+@keyframes kf-rod-animation {
+  0% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+  50% {
+    -webkit-transform: scaleY(0.6);
+            transform: scaleY(0.6);
+  }
+  100% {
+    -webkit-transform: scaleY(1);
+            transform: scaleY(1);
+  }
+}
+
+.rod-back {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: black;
+  opacity: 0.4;
+  width: 100vw;
+  height: 100vh;
+  z-index: 500;
+}
+
+.rod-on .rod-back {
+  display: block;
+}
 /*# sourceMappingURL=style.css.map */

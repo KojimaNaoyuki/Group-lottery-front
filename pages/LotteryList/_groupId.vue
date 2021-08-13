@@ -11,6 +11,18 @@
             <div class="card-status" v-if="item.public_private_info">受付中</div>
             <div class="card-status-stop" v-if="!item.public_private_info">受付停止</div>
         </div>
+
+        <div class="rod-back"></div>
+        <div class="rod-animation">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        </div>
     </div>
 </template>
 
@@ -30,6 +42,8 @@ export default {
         }
     },
     mounted: async function() {
+        this.loaderDisplay(true); //ローダー開始
+
         //グループIDを切り出す、DB検索用に
         let groupId =  this.$route.params.groupId;
         let groupIdLength = groupId.length-4;
@@ -62,10 +76,22 @@ export default {
             this.LotteryArr = response.data.data;
         })
         .catch(error => console.log(error));
+
+        this.loaderDisplay(false); //ローダー終了
     },
     methods: {
         toLotteryPage: function(id) {
             this.$router.push('/LotteryPage/' + this.$route.params.groupId + '/' + id);
+        },
+        loaderDisplay: function(state) {
+            //ローダーの表示
+            const tg = document.querySelector('#global-contents');
+
+            if(state) {
+                tg.classList.add('rod-on');  
+            } else {
+                tg.classList.remove('rod-on');
+            }
         }
     }
 }

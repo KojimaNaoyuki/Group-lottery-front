@@ -123,6 +123,18 @@
             </div>
         </div>
         <!-- アコーディオンメニュー -->
+
+        <div class="rod-back"></div>
+        <div class="rod-animation">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </div>
 </template>
 
@@ -168,6 +180,8 @@ export default {
             }
         });
 
+        this.loaderDisplay(true); //ローダー開始
+
         //グループIDを切り出す、DB検索用に
         let groupId =  this.$route.params.groupId;
         let groupIdLength = groupId.length-4;
@@ -189,6 +203,8 @@ export default {
             this.lotteryTitleArr = response.data.data;
         })
         .catch(error => console.log(error));
+
+        this.loaderDisplay(false); //ローダー終了
     },
     filters: {
         otherYear: function(value) {
@@ -264,16 +280,22 @@ export default {
                 }
             }
 
+            this.loaderDisplay(true); //ローダー開始
+
             //DBアップデート
             await axios
             .put("http://localhost:8000/api/room/" + LotteryId, sendData)
             .then(() => console.log('更新が完了しました'))
             .catch(error => console.log(error));
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert("更新しました");
         },
         createLottery: async function() {
             //抽選を作成
+            this.loaderDisplay(true); //ローダー開始
+
             const sendData = {
                 lottery_title: this.LotteryName,
                 public_private_info: true,
@@ -285,10 +307,15 @@ export default {
             .then(() => console.log("データベース登録完了"))
             .catch(error => console.log(error));
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert('投票を作成しました');
         },
         lottery: async function() {
             //抽選
+
+            this.loaderDisplay(true); //ローダー開始
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
@@ -303,6 +330,7 @@ export default {
             })
             .catch(error => console.log(error));
             if(alreadyLotteryFlag) {
+                this.loaderDisplay(false); //ローダー終了
                 alert('すでに抽選が行われています');
                 return;
             }
@@ -364,10 +392,15 @@ export default {
             this.listOpen(1);
             document.querySelector('.list-lottery').classList.add('list-lottery-open');
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert("抽選が完了しました");
         },
         winning: async function() {
             //当選者DB保存
+
+            this.loaderDisplay(true); //ローダー開始
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
@@ -395,10 +428,15 @@ export default {
             .then(() => console.log('更新が完了しました'))
             .catch(error => console.log(error));
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert('当選者を確定しました');
         },
         delMemberDisplay: async function() {
             //抽選登録者削除処理 メンバー取得
+
+            this.loaderDisplay(true); //ローダー開始
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
@@ -414,9 +452,13 @@ export default {
             this.listOpen(1);
             this.listOpen(1);
             document.querySelector('.list-del-member').classList.add('list-open');
+
+            this.loaderDisplay(false); //ローダー終了
         },
         delMember: async function() {
             //メンバーの削除処理 DB
+
+            this.loaderDisplay(true); //ローダー開始
 
             //↓未完成(バックエンド側に問題あり idが届いてなくて更新できず)
             let sendData;
@@ -433,6 +475,8 @@ export default {
                 }
             }
 
+            this.loaderDisplay(false); //ローダー終了
+
             alert('削除しました');
         },
         deleteLottery: async function() {
@@ -442,6 +486,8 @@ export default {
                 return;
             }
 
+            this.loaderDisplay(true); //ローダー開始
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
@@ -449,6 +495,8 @@ export default {
             .delete("http://localhost:8000/api/room/" + LotteryId)
             .then(() => console.log("削除完了"))
             .catch(error => console.log(error));
+
+            this.loaderDisplay(false); //ローダー終了
 
             alert('削除しました');
         },
@@ -460,7 +508,7 @@ export default {
             }
 
             firebase.auth().signOut().then(() => {
-                this.$router.replace('/');
+                console.log('ログアウトしました');
             });
         },
         accountDel: function() {
@@ -474,6 +522,16 @@ export default {
                 }).catch(error => console.log(error));
             } else {
                 return;
+            }
+        },
+        loaderDisplay: function(state) {
+            //ローダーの表示
+            const tg = document.querySelector('#global-contents');
+
+            if(state) {
+                tg.classList.add('rod-on');  
+            } else {
+                tg.classList.remove('rod-on');
             }
         }
     }

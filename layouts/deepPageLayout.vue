@@ -1,5 +1,5 @@
 <template>
-    <div class="boxDeepPage">
+    <div class="boxDeepPage" id="global-contents">
         <DrawerMeny />
 
         <div class="menu-icon" @click="MenuClicked">
