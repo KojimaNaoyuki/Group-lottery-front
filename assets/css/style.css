@@ -1,3 +1,7 @@
+body {
+  background-color: #4f7776;
+}
+
 .Arrow-animation {
   -webkit-animation: kf-Arrow-animation 2s;
           animation: kf-Arrow-animation 2s;
