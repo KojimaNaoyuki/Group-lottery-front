@@ -552,6 +552,7 @@ form {
     padding: 5px 0;
     font-size: 14px;
     font-weight: normal;
+    overflow-x: scroll;
 }
 .member-list-contents-block {
     position: relative;

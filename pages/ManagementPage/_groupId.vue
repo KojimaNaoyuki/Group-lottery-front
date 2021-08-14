@@ -1,7 +1,7 @@
 <template>
     <div class="box">
         <div class="group">
-            <div class="back-img"><NuxtLink to="/LotteryList"><h3>&lt;</h3></NuxtLink></div>
+            <div class="back-img"><NuxtLink to="/"><h3>&lt;</h3></NuxtLink></div>
             <h2 class="group-title">グループ管理</h2>
             <h3 class="group-name">{{groupName}}</h3>
         </div>
@@ -47,6 +47,12 @@
                         </select>
                     </form>
                 </label>
+
+                <div class="link-copy-box">
+                    <h4 class="link-copy-box-title">抽選リンク</h4>
+                    <input type="text" value="http://localhost:3000/ManagementPage/13416" readonly class="link-copy-box-text" id="copyTg">
+                    <img src="~/assets/img/copy.png" alt="copy" class="link-copy-box-img" @click="linkCopy">
+                </div>
 
                 <label class="list-label">
                     <div class="list-input-box">抽選受付状態</div>
@@ -203,6 +209,8 @@ export default {
             this.lotteryTitleArr = response.data.data;
         })
         .catch(error => console.log(error));
+
+        this.linkSet();
 
         this.loaderDisplay(false); //ローダー終了
     },
@@ -533,6 +541,24 @@ export default {
             } else {
                 tg.classList.remove('rod-on');
             }
+        },
+        linkSet: function() {
+            //抽選リンクを作成
+            const selectNum = document.formSelect.lotterySelect.selectedIndex;
+            const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
+
+            document.querySelector('#copyTg').value = 'http://localhost:3000/LotteryPage/' + this.$route.params.groupId + '/' + LotteryId;
+            console.log('リンクを作成');
+        },
+        linkCopy: function() {
+            //抽選リンクのコピー
+            const tg = document.querySelector('#copyTg');
+
+            tg.select();
+
+            document.execCommand('copy');
+
+            alert('URLをコピーしました');
         }
     }
 }
@@ -716,5 +742,31 @@ a {
   text-align: right;
   font-size: 14px;
   color: #a73f1e;
+}
+
+.link-copy-box {
+    padding: 5px 0;
+    margin: 0 0 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #44968e;
+}
+.link-copy-box-title {
+    padding-right: 15px;
+    font-size: 14px;
+    font-weight: normal;
+}
+.link-copy-box-text {
+    font-size: 14px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    overflow-x: scroll;
+    color: #3f51b5;
+}
+.link-copy-box-img {
+    margin-left: 5px;
+    width: 20px;
 }
 </style>

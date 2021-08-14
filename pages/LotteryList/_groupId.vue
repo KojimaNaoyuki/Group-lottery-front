@@ -98,6 +98,9 @@ export default {
 </script>
 
 <style scoped>
+.box {
+    padding: 0 0 45px;
+}
 .group {
     position: relative;
     background-color: #69b5a3;

@@ -2,7 +2,7 @@
     <header class="header">
         <div class="header-title-back"></div>
         <div class="header-title-wrap">
-            <h1 class="header-title">Group Lottery</h1>
+            <h1 class="header-title">Group <span>Selector</span></h1>
         </div>
         <div class="header-drawer-meny" @click="clickedFnMenu">
             <DrawerMenyIcon />
@@ -37,6 +37,9 @@ export default {
 }
 .header-title {
     font-size: 24px;
+}
+.header-title > span {
+    color: #25449c;
 }
 .header-title-wrap {
     width: 200px;
