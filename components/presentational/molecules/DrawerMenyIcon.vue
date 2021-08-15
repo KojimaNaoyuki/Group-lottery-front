@@ -34,4 +34,12 @@
 .drawer-meny-icon-open .drawer-meny-icon > span:nth-child(3) {
     transform: translateY(-12px) rotate(135deg);
 }
+
+
+@media screen and (min-width: 1060px) {
+    .drawer-meny-icon {
+        display: none;
+        background-color: black;
+    }
+}
 </style>

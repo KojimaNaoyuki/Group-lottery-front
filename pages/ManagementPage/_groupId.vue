@@ -10,27 +10,29 @@
         <div class="list" id="list0">
             <h2 class="list-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />投票を作成</h2>
             <div class="list-contents-big">
-                <validation-observer ref="obs" v-slot="ObserverProps">
-                    <validation-provider v-slot="ProviderProps" rules="required">
-                        <label class="list-label">
-                            <div class="list-input-box">抽選名</div>
-                            <input type="text" placeholder="入力" class="input" v-model="LotteryName" name="抽選名">
-                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-                        </label>
-                    </validation-provider>
+                <div class="content-width">
+                    <validation-observer ref="obs" v-slot="ObserverProps">
+                        <validation-provider v-slot="ProviderProps" rules="required">
+                            <label class="list-label">
+                                <div class="list-input-box">抽選名</div>
+                                <input type="text" placeholder="入力" class="input" v-model="LotteryName" name="抽選名">
+                                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                            </label>
+                        </validation-provider>
 
-                    <validation-provider v-slot="ProviderProps" rules="required">
-                        <label class="list-label">
-                            <div class="list-input-box">抽選登録〆切日</div>
-                            <div class="list-day">
-                                <input type="date" class="input" v-model="LotteryDay" name="〆切日">
-                            </div>
-                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-                        </label>
-                    </validation-provider>
+                        <validation-provider v-slot="ProviderProps" rules="required">
+                            <label class="list-label">
+                                <div class="list-input-box">抽選登録〆切日</div>
+                                <div class="list-day">
+                                    <input type="date" class="input" v-model="LotteryDay" name="〆切日">
+                                </div>
+                                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                            </label>
+                        </validation-provider>
 
-                    <Btn text="作成" @clickedFn="createLottery" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-                </validation-observer>
+                        <Btn text="作成" @clickedFn="createLottery" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                    </validation-observer>
+                </div>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -39,76 +41,78 @@
         <div class="list" id="list1">
             <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />投票を管理</h2>
             <div class="list-contents-big">
-                <label class="list-label">
-                    <div class="list-input-box">管理対象抽選</div>
-                    <form name="formSelect">
-                        <select name="lotterySelect" id="" class="input">
-                            <option :value="item.id" v-for="item in lotteryTitleArr" :key="item.id">{{item.lottery_title}}</option>
-                        </select>
-                    </form>
-                </label>
+                <div class="content-width">
+                    <label class="list-label">
+                        <div class="list-input-box">管理対象抽選</div>
+                        <form name="formSelect">
+                            <select name="lotterySelect" id="" class="input">
+                                <option :value="item.id" v-for="item in lotteryTitleArr" :key="item.id">{{item.lottery_title}}</option>
+                            </select>
+                        </form>
+                    </label>
 
-                <div class="link-copy-box">
-                    <h4 class="link-copy-box-title">抽選リンク</h4>
-                    <input type="text" value="http://localhost:3000/ManagementPage/13416" readonly class="link-copy-box-text" id="copyTg">
-                    <img src="~/assets/img/copy.png" alt="copy" class="link-copy-box-img" @click="linkCopy">
+                    <div class="link-copy-box">
+                        <h4 class="link-copy-box-title">抽選リンク</h4>
+                        <input type="text" value="http://localhost:3000/ManagementPage/13416" readonly class="link-copy-box-text" id="copyTg">
+                        <img src="~/assets/img/copy.png" alt="copy" class="link-copy-box-img" @click="linkCopy">
+                    </div>
+
+                    <label class="list-label">
+                        <div class="list-input-box">抽選受付状態</div>
+                        <div class="btnBox"><button id="LotteryStatusBtnTrue" class="list-input-Btn" @click="LotteryStatus(true)">受け付ける</button><button id="LotteryStatusBtnFalse" class="list-input-Btn" @click="LotteryStatus(false)">受け付けない</button></div>
+                    </label>
+
+                    <label class="list-label">
+                        <Btn text="抽選する" @clickedFn="lottery" />
+                    </label>
+                    <div class="list-lottery">
+                        <div class="list-input-box">抽選結果</div>
+                        <div class="list-lottery-header">
+                            <h3 class="list-lottery-header-text">順位</h3>
+                            <h3 class="list-lottery-header-text">代表(人数)</h3>
+                            <h3 class="list-lottery-header-text">学年</h3>
+                            <h3 class="list-lottery-header-text">状態</h3>
+                        </div>
+                        <div class="list-lottery-leader" v-for="item in lotteryMemberArr" :key="item.order">
+                            <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order" v-if="!item.del_flag">
+                            <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.order}}</h4>
+                            <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.name}}({{item.member_num}})</h4>
+                            <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.schoolYear | otherYear}}</h4>
+                            <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                            <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
+                        </div>
+                        <div class="mtb"></div>
+                        <Btn text="当選者確定" @clickedFn="winning" />
+                    </div>
+
+                    <label class="list-label">
+                        <div class="list-input-box">抽選登録メンバーを削除する</div>
+                        <Btn text="メンバーを表示" @clickedFn="delMemberDisplay" />
+                    </label>
+                    <div class="list-del-member">
+                        <div class="list-input-box">登録メンバー</div>
+                        <div class="list-lottery-header">
+                            <h3 class="list-lottery-header-text">名前</h3>
+                            <h3 class="list-lottery-header-text">学年</h3>
+                            <h3 class="list-lottery-header-text">状態</h3>
+                        </div>
+                        <div class="list-lottery-leader" v-for="item in delMemberArr" :key="item.id">
+                            <input type="checkbox" class="list-lottery-leader-check" :id="'delCheckbox' + item.id" v-if="!item.del_flag">
+                            <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.member_name}}</h4>
+                            <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
+                            <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                            <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
+                            <div class="list-lottery-leader-text" v-if="item.del_flag">削除済み</div>
+                        </div>
+                        <div class="mtb"></div>
+                        <Btn text="削除" @clickedFn="delMember" />
+                    </div>
+
+                    <label class="list-label">
+                        <div class="list-input-box">投票を削除</div>
+                        <Btn text="削除" @clickedFn="deleteLottery" />
+                    </label>
                 </div>
-
-                <label class="list-label">
-                    <div class="list-input-box">抽選受付状態</div>
-                    <div class="btnBox"><button id="LotteryStatusBtnTrue" class="list-input-Btn" @click="LotteryStatus(true)">受け付ける</button><button id="LotteryStatusBtnFalse" class="list-input-Btn" @click="LotteryStatus(false)">受け付けない</button></div>
-                </label>
-
-                <label class="list-label">
-                    <Btn text="抽選する" @clickedFn="lottery" />
-                </label>
-                <div class="list-lottery">
-                    <div class="list-input-box">抽選結果</div>
-                    <div class="list-lottery-header">
-                        <h3 class="list-lottery-header-text">順位</h3>
-                        <h3 class="list-lottery-header-text">代表(人数)</h3>
-                        <h3 class="list-lottery-header-text">学年</h3>
-                        <h3 class="list-lottery-header-text">状態</h3>
-                    </div>
-                    <div class="list-lottery-leader" v-for="item in lotteryMemberArr" :key="item.order">
-                        <input type="checkbox" class="list-lottery-leader-check" :id="'lotteryCheckbox' + item.order" v-if="!item.del_flag">
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.order}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.name}}({{item.member_num}})</h4>
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.schoolYear | otherYear}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
-                    </div>
-                    <div class="mtb"></div>
-                    <Btn text="当選者確定" @clickedFn="winning" />
-                </div>
-
-                <label class="list-label">
-                    <div class="list-input-box">抽選登録メンバーを削除する</div>
-                    <Btn text="メンバーを表示" @clickedFn="delMemberDisplay" />
-                </label>
-                <div class="list-del-member">
-                    <div class="list-input-box">登録メンバー</div>
-                    <div class="list-lottery-header">
-                        <h3 class="list-lottery-header-text">名前</h3>
-                        <h3 class="list-lottery-header-text">学年</h3>
-                        <h3 class="list-lottery-header-text">状態</h3>
-                    </div>
-                    <div class="list-lottery-leader" v-for="item in delMemberArr" :key="item.id">
-                        <input type="checkbox" class="list-lottery-leader-check" :id="'delCheckbox' + item.id" v-if="!item.del_flag">
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.member_name}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
-                        <h4 class="list-lottery-leader-text" v-if="item.status == 'hold' && !item.del_flag">保留</h4>
-                        <div class="list-lottery-leader-text" v-if="item.del_flag">削除済み</div>
-                    </div>
-                    <div class="mtb"></div>
-                    <Btn text="削除" @clickedFn="delMember" />
-                </div>
-
-                <label class="list-label">
-                    <div class="list-input-box">投票を削除</div>
-                    <Btn text="削除" @clickedFn="deleteLottery" />
-                </label>
 
                 <DownArrow />
             </div>
@@ -580,6 +584,12 @@ a {
     font-size: 28px;
 }
 
+.content-width {
+    position: relative;
+    margin: 0 auto;
+    max-width: 640px;
+}
+
 .group {
     position: relative;
     background-color: #69b5a3;
@@ -612,6 +622,9 @@ a {
     color: #3f51b5;
     line-height: 22px;
 }
+.list-title:hover {
+    cursor: pointer;
+}
 
 .list-input-box {
     display: block;
@@ -632,6 +645,11 @@ a {
     transition: all 0.4s;
     text-align: center;
     overflow-y: scroll;
+    -ms-overflow-style: none;    /* IE, Edge 対応 */
+    scrollbar-width: none;       /* Firefox 対応 */
+}
+.list-contents-big::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+    display: none;
 }
 .list-open .list-contents {
     visibility: visible;
@@ -768,5 +786,12 @@ a {
 .link-copy-box-img {
     margin-left: 5px;
     width: 20px;
+}
+
+
+@media screen and (min-width: 1060px) {
+    .box {
+      width: calc(100vw - 201px);
+    }
 }
 </style>

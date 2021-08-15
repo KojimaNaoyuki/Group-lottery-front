@@ -5,11 +5,13 @@
         </div>
 
         <div class="card" v-for="item in LotteryArr" :key="item.id">
-            <h3 class="card-title">{{item.lottery_title}}</h3>
-            <h4 class="card-day">期限： {{item.lottery_day}}</h4>
-            <Btn text="確認" @clickedFn="toLotteryPage(item.id)"/>
-            <div class="card-status" v-if="item.public_private_info">受付中</div>
-            <div class="card-status-stop" v-if="!item.public_private_info">受付停止</div>
+            <div class="content-width">
+                <h3 class="card-title">{{item.lottery_title}}</h3>
+                <h4 class="card-day">期限： {{item.lottery_day}}</h4>
+                <Btn text="確認" @clickedFn="toLotteryPage(item.id)"/>
+                <div class="card-status" v-if="item.public_private_info">受付中</div>
+                <div class="card-status-stop" v-if="!item.public_private_info">受付停止</div>
+            </div>
         </div>
 
         <div class="rod-back"></div>
@@ -98,6 +100,12 @@ export default {
 </script>
 
 <style scoped>
+.content-width {
+    position: relative;
+    margin: 0 auto;
+    max-width: 640px;
+}
+
 .box {
     padding: 0 0 45px;
 }
@@ -149,5 +157,11 @@ export default {
     color: #3e4b94;
     font-size: 16px;
     font-weight: bold;
+}
+
+@media screen and (min-width: 1060px) {
+    .box {
+      width: calc(100vw - 201px);
+    }
 }
 </style>

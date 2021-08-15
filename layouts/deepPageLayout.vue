@@ -2,11 +2,14 @@
     <div class="boxDeepPage" id="global-contents">
         <DrawerMeny />
 
-        <div class="menu-icon" @click="MenuClicked">
-          <DrawerMenyIcon />
+        <div class="wrap">
+          <div class="menu-icon" @click="MenuClicked">
+            <DrawerMenyIcon />
+          </div>
+
+          <Nuxt />
         </div>
 
-        <Nuxt />
     </div>
 </template>
 
@@ -40,5 +43,12 @@ export default {
   top: 2px;
   right: 4px;
   z-index: 10;
+}
+
+@media screen and (min-width: 1060px) {
+    .boxDeepPage {
+      display: flex;
+      flex-wrap: wrap;
+    }
 }
 </style>

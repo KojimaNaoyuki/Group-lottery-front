@@ -24,4 +24,7 @@ export default {
     border-radius: 3px;
     color: #0f1b11;
 }
+.tg:hover {
+    cursor: pointer;
+}
 </style>

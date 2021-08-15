@@ -9,20 +9,22 @@
         <div class="list" id="list0">
             <h2 class="list-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />メンバーを確認</h2>
             <div class="list-contents-big">
-                <div class="member-list">
-                    <div class="member-list-header">
-                        <h3>名前</h3>
-                        <h3>学年</h3>
-                        <h3>状態</h3>
+                <div class="content-width">
+                    <div class="member-list">
+                        <div class="member-list-header">
+                            <h3>名前</h3>
+                            <h3>学年</h3>
+                            <h3>状態</h3>
+                        </div>
                     </div>
-                </div>
-                <div class="member-list-contents" v-for="item in memberArr" :key="item.id">
-                    <div class="leader-icon" v-if="item.id == item.group_judg"></div>
-                    <h4 v-if="!item.del_flag">{{item.member_name}}</h4>
-                    <h4 v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
-                    <h4 v-if="item.status == 'join' && !item.del_flag">参加</h4>
-                    <h4 v-if="item.status == 'hold' && !item.del_flag">保留</h4>
-                    <h4 v-if="item.del_flag">削除済み</h4>
+                    <div class="member-list-contents" v-for="item in memberArr" :key="item.id">
+                        <div class="leader-icon" v-if="item.id == item.group_judg"></div>
+                        <h4 v-if="!item.del_flag">{{item.member_name}}</h4>
+                        <h4 v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
+                        <h4 v-if="item.status == 'join' && !item.del_flag">参加</h4>
+                        <h4 v-if="item.status == 'hold' && !item.del_flag">保留</h4>
+                        <h4 v-if="item.del_flag">削除済み</h4>
+                    </div>
                 </div>
 
                 <DownArrow />
@@ -34,29 +36,31 @@
         <div class="list" id="list1">
             <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />一人で参加</h2>
             <div class="list-contents">
-                <validation-observer ref="obs" v-slot="ObserverProps">
-                    <label class="input-box">
-                        <validation-provider v-slot="ProviderProps" rules="required">
-                            名前&ensp;
-                            <input type="text" class="input" placeholder="入力" v-model="inputName[0]" name="名前">
-                            <form name="formSelect">
-                                <select name="year" class="input-select">
-                                    <option value="1">1年</option>
-                                    <option value="2">2年</option>
-                                    <option value="3">3年</option>
-                                    <option value="4">4年</option>
-                                    <option value="0">他</option>
-                                </select>
-                                <select name="status" class="input-select">
-                                    <option value="join">参加</option>
-                                    <option value="hold">保留</option>
-                                </select>
-                            </form>
-                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-                        </validation-provider>
-                    </label>
-                    <Btn text="登録" class="list-btn" @clickedFn="registerMember" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-                </validation-observer>
+                <div class="content-width">
+                    <validation-observer ref="obs" v-slot="ObserverProps">
+                        <label class="input-box">
+                            <validation-provider v-slot="ProviderProps" rules="required">
+                                名前&ensp;
+                                <input type="text" class="input" placeholder="入力" v-model="inputName[0]" name="名前">
+                                <form name="formSelect">
+                                    <select name="year" class="input-select">
+                                        <option value="1">1年</option>
+                                        <option value="2">2年</option>
+                                        <option value="3">3年</option>
+                                        <option value="4">4年</option>
+                                        <option value="0">他</option>
+                                    </select>
+                                    <select name="status" class="input-select">
+                                        <option value="join">参加</option>
+                                        <option value="hold">保留</option>
+                                    </select>
+                                </form>
+                                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                            </validation-provider>
+                        </label>
+                        <Btn text="登録" class="list-btn" @clickedFn="registerMember" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                    </validation-observer>
+                </div>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -65,32 +69,34 @@
         <div class="list" id="list2">
             <h2 class="list-title" @click="listOpen(2)"><ListOpenIcon :text="list2Text" />複数人で参加</h2>
             <div class="list-contents-big">
-                <validation-observer ref="obs" v-slot="ObserverProps">
-                    <label class="input-box" v-for="n in inputNum" :key="n">
-                        <validation-provider v-slot="ProviderProps" rules="required">
-                            名前&ensp;
-                            <input type="text" class="input" placeholder="入力" v-model="inputName[n]" name="名前">
-                            <form :name="'formSelect' + n">
-                                <select :name="'year' + n" class="input-select">
-                                    <option value="1">1年</option>
-                                    <option value="2">2年</option>
-                                    <option value="3">3年</option>
-                                    <option value="4">4年</option>
-                                    <option value="0">他</option>
-                                </select>
-                                <select :name="'status' + n" class="input-select">
-                                    <option value="join">参加</option>
-                                    <option value="hold">保留</option>
-                                </select>
-                            </form>
-                            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-                        </validation-provider>
-                    </label>
+                <div class="content-width">
+                    <validation-observer ref="obs" v-slot="ObserverProps">
+                        <label class="input-box" v-for="n in inputNum" :key="n">
+                            <validation-provider v-slot="ProviderProps" rules="required">
+                                名前&ensp;
+                                <input type="text" class="input" placeholder="入力" v-model="inputName[n]" name="名前">
+                                <form :name="'formSelect' + n">
+                                    <select :name="'year' + n" class="input-select">
+                                        <option value="1">1年</option>
+                                        <option value="2">2年</option>
+                                        <option value="3">3年</option>
+                                        <option value="4">4年</option>
+                                        <option value="0">他</option>
+                                    </select>
+                                    <select :name="'status' + n" class="input-select">
+                                        <option value="join">参加</option>
+                                        <option value="hold">保留</option>
+                                    </select>
+                                </form>
+                                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                            </validation-provider>
+                        </label>
 
-                    <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
+                        <div @click="inputAdd"><ListOpenIcon text="+" class="list-add-btn" /></div>
 
-                    <Btn text="登録" class="list-btn" @clickedFn="registerMemberMulti" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-                </validation-observer>
+                        <Btn text="登録" class="list-btn" @clickedFn="registerMemberMulti" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+                    </validation-observer>
+                </div>
             </div>
         </div>
         <!-- アコーディオンメニュー -->
@@ -99,14 +105,16 @@
         <div class="list" id="list3">
             <h2 class="list-title" @click="listOpen(3)"><ListOpenIcon :text="list3Text" />抽選結果を表示</h2>
             <div class="list-contents-big">
-                <div class="member-list">
-                    <div class="member-list-header">
-                        <h3>当選者名</h3>
+                <div class="content-width">
+                    <div class="member-list">
+                        <div class="member-list-header">
+                            <h3>当選者名</h3>
+                        </div>
                     </div>
-                </div>
-                <div class="member-list-contents-block" v-for="itemWrap in memberWinnerArr" :key="itemWrap.id">
-                    <div class="member-list-contents-group">
-                        <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
+                    <div class="member-list-contents-block" v-for="itemWrap in memberWinnerArr" :key="itemWrap.id">
+                        <div class="member-list-contents-group">
+                            <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
+                        </div>
                     </div>
                 </div>
 
@@ -454,6 +462,12 @@ form {
     display: inline;
 }
 
+.content-width {
+    position: relative;
+    margin: 0 auto;
+    max-width: 640px;
+}
+
 .block {
     display: block;
 }
@@ -494,6 +508,9 @@ form {
     color: #3f51b5;
     line-height: 22px;
 }
+.list-title:hover {
+    cursor: pointer;
+}
 
 .list-contents {
     visibility: hidden;
@@ -509,6 +526,11 @@ form {
     transition: all 0.4s;
     text-align: center;
     overflow-y: scroll;
+    -ms-overflow-style: none;    /* IE, Edge 対応 */
+    scrollbar-width: none;       /* Firefox 対応 */
+}
+.list-contents-big::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+    display:none;
 }
 .list-open .list-contents {
     visibility: visible;
@@ -553,6 +575,11 @@ form {
     font-size: 14px;
     font-weight: normal;
     overflow-x: scroll;
+    -ms-overflow-style: none;    /* IE, Edge 対応 */
+    scrollbar-width: none;       /* Firefox 対応 */
+}
+.member-list-contents > h4::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+    display:none;
 }
 .member-list-contents-block {
     position: relative;
@@ -633,5 +660,12 @@ form {
   text-align: right;
   font-size: 14px;
   color: #a73f1e;
+}
+
+
+@media screen and (min-width: 1060px) {
+    .box {
+      width: calc(100vw - 201px);
+    }
 }
 </style>

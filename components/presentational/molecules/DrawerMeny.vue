@@ -83,9 +83,24 @@ a {
     font-weight: normal;
     color: #e2e2e2;
 }
+.drawer-menu-list-li:hover {
+    cursor: pointer;
+}
 .drawer-menu-img {
     display: block;
     margin-right: 10px;
     width: 25px;
+}
+
+
+@media screen and (min-width: 1060px) {
+    .drawer-menu {
+        display: block;
+        position: relative;
+        visibility: visible;
+        height: 110vh;
+        opacity: 1.0;
+        width: 201px;
+    }
 }
 </style>

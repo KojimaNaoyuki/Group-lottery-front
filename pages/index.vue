@@ -2,57 +2,61 @@
   <div class="box" id="indexContent">
     <div class="wrap">
       <section class="card">
-        <validation-observer ref="obs" v-slot="ObserverProps">
-          <validation-provider v-slot="ProviderProps" rules="min:5">
-            <h2 class="card-title">グループID</h2>
-            <input type="text" placeholder="ID" class="input" v-model="groupInputId" name="ID">
-            <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-          </validation-provider>
+        <div class="content-width">
+          <validation-observer ref="obs" v-slot="ObserverProps">
+            <validation-provider v-slot="ProviderProps" rules="min:5">
+              <h2 class="card-title">グループID</h2>
+              <input type="text" placeholder="ID" class="input" v-model="groupInputId" name="ID">
+              <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+            </validation-provider>
 
-          <div class="mtb-M"></div>
+            <div class="mtb-M"></div>
 
-          <Btn text="決定" @clickedFn="ToLotteryList" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-        </validation-observer>
+            <Btn text="決定" @clickedFn="ToLotteryList" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+          </validation-observer>
+        </div>
       </section>
       <!-- アコーディオンメニュー -->
       <section class="new-create" id="list0">
         <h3 class="new-create-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />アカウントを新規作成</h3>
         <div class="new-create-contents">
-          <validation-observer ref="obs" v-slot="ObserverProps">
-            <validation-provider v-slot="ProviderProps" rules="required">
-              <label class="new-create-label">
-                <div class="new-create-input-box">グループ名</div>
-                <input type="text" placeholder="入力" class="input" v-model="groupName" name="グループ名">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-              </label>
-            </validation-provider>
-
-            <validation-provider v-slot="ProviderProps" rules="email">
-              <label class="new-create-label">
-                <div class="new-create-input-box">メールアドレス</div>
-                <input type="text" placeholder="入力" class="input" v-model="email" name="アドレス">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-              </label>
-            </validation-provider>
-
-            <label class="new-create-label">
-                <div class="new-create-input-box">パスワード</div>
-
-              <validation-provider v-slot="ProviderProps" rules="min:8">
-                <input type="password" placeholder="入力" class="input" v-model="password" name="パスワード">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+          <div class="content-width">
+            <validation-observer ref="obs" v-slot="ObserverProps">
+              <validation-provider v-slot="ProviderProps" rules="required">
+                <label class="new-create-label">
+                  <div class="new-create-input-box">グループ名</div>
+                  <input type="text" placeholder="入力" class="input" v-model="groupName" name="グループ名">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </label>
               </validation-provider>
 
-              <div class="mtb"></div>
-
-              <validation-provider v-slot="ProviderProps" rules="min:8">
-                <input type="password" placeholder="再度入力" class="input" v-model="passwordre" name="パスワード">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+              <validation-provider v-slot="ProviderProps" rules="email">
+                <label class="new-create-label">
+                  <div class="new-create-input-box">メールアドレス</div>
+                  <input type="text" placeholder="入力" class="input" v-model="email" name="アドレス">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </label>
               </validation-provider>
-            </label>
-            
-            <Btn text="登録" @clickedFn="register" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-          </validation-observer>
+
+              <label class="new-create-label">
+                  <div class="new-create-input-box">パスワード</div>
+
+                <validation-provider v-slot="ProviderProps" rules="min:8">
+                  <input type="password" placeholder="入力" class="input" v-model="password" name="パスワード">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </validation-provider>
+
+                <div class="mtb"></div>
+
+                <validation-provider v-slot="ProviderProps" rules="min:8">
+                  <input type="password" placeholder="再度入力" class="input" v-model="passwordre" name="パスワード">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </validation-provider>
+              </label>
+              
+              <Btn text="登録" @clickedFn="register" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+            </validation-observer>
+          </div>
 
           <DownArrow />
         </div>
@@ -63,33 +67,35 @@
       <section class="login" id="list1">
         <h3 class="login-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />主催者ログイン</h3>
         <div class="login-contents">
-          <validation-observer ref="obs" v-slot="ObserverProps">
-            <validation-provider v-slot="ProviderProps" rules="min:5">
-              <label class="login-label">
-                <div class="login-input-box">グループID</div>
-                <input type="text" placeholder="入力" class="input" v-model="groupInputId" name="ID">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-              </label>
-            </validation-provider>
+          <div class="content-width">
+            <validation-observer ref="obs" v-slot="ObserverProps">
+              <validation-provider v-slot="ProviderProps" rules="min:5">
+                <label class="login-label">
+                  <div class="login-input-box">グループID</div>
+                  <input type="text" placeholder="入力" class="input" v-model="groupInputId" name="ID">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </label>
+              </validation-provider>
 
-            <validation-provider v-slot="ProviderProps" rules="email">
-              <label class="login-label">
-                <div class="login-input-box">メールアドレス</div>
-                <input type="text" placeholder="入力" class="input" v-model="loginEmail" name="アドレス">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-              </label>
-            </validation-provider>
+              <validation-provider v-slot="ProviderProps" rules="email">
+                <label class="login-label">
+                  <div class="login-input-box">メールアドレス</div>
+                  <input type="text" placeholder="入力" class="input" v-model="loginEmail" name="アドレス">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </label>
+              </validation-provider>
 
-            <validation-provider v-slot="ProviderProps" rules="min:8">
-              <label class="login-label">
-                <div class="login-input-box">パスワード</div>
-                <input type="password" placeholder="入力" class="input" v-model="loginPassword" name="パスワード">
-                <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-              </label>
-            </validation-provider>
+              <validation-provider v-slot="ProviderProps" rules="min:8">
+                <label class="login-label">
+                  <div class="login-input-box">パスワード</div>
+                  <input type="password" placeholder="入力" class="input" v-model="loginPassword" name="パスワード">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </label>
+              </validation-provider>
 
-            <Btn text="ログイン" @clickedFn="login" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-          </validation-observer>
+              <Btn text="ログイン" @clickedFn="login" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+            </validation-observer>
+          </div>
         </div>
       </section>
       <!-- アコーディオンメニュー -->
@@ -293,6 +299,10 @@ export default {
 </script>
 
 <style scoped>
+.content-width {
+  margin: 0 auto;
+  max-width: 640px;
+}
 .mtb {
   margin: 20px 0;
 }
@@ -306,7 +316,6 @@ export default {
 
 .wrap {
   position: relative;
-  width: 100vw;
   top: 10%;
   left: 0;
 }
@@ -332,6 +341,9 @@ export default {
   color: #3f51b5;
   line-height: 22px;
 }
+.new-create-title:hover {
+  cursor: pointer;
+}
 
 .new-create-contents {
   position: relative;
@@ -349,6 +361,11 @@ export default {
   text-align: center;
   padding: 40px 0;
   overflow-y: scroll;
+  -ms-overflow-style: none;    /* IE, Edge 対応 */
+  scrollbar-width: none;       /* Firefox 対応 */
+}
+.list-open .new-create-contents::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+  display:none;
 }
 
 .new-create-label {
@@ -371,6 +388,9 @@ export default {
   color: #3f51b5;
   line-height: 22px;
 }
+.login-title:hover {
+  cursor: pointer;
+}
 
 .login-contents {
   visibility: hidden;
@@ -387,6 +407,11 @@ export default {
   text-align: center;
   padding: 40px 0;
   overflow-y: scroll;
+  -ms-overflow-style: none;    /* IE, Edge 対応 */
+  scrollbar-width: none;       /* Firefox 対応 */
+}
+.list-open .login-contents::-webkit-scrollbar {  /* Chrome, Safari 対応 */
+  display:none;
 }
 
 .login-label {
@@ -417,5 +442,12 @@ export default {
   text-align: right;
   font-size: 14px;
   color: #a73f1e;
+}
+
+
+@media screen and (min-width: 1060px) {
+    .wrap {
+      width: calc(100vw - 201px);
+    }
 }
 </style>

@@ -3,10 +3,12 @@
 
     <DrawerMeny />
 
-    <div id="header">
-      <Header @clickedFnMenu="MenuClicked"/>
+    <div class="wrap">
+      <div id="header">
+        <Header @clickedFnMenu="MenuClicked"/>
+      </div>
+      <Nuxt />
     </div>
-    <Nuxt />
   </div>
 </template>
 
@@ -34,5 +36,13 @@ export default {
   width: 100vw;
   height: 100vh;
   background-color: #4f7776;
+}
+
+
+@media screen and (min-width: 1060px) {
+    .boxMain {
+      display: flex;
+      flex-wrap: wrap;
+    }
 }
 </style>
