@@ -19,11 +19,6 @@ export default {
         Header,
         DrawerMeny
     },
-    head() {
-      return {
-        title: 'Group Selector'
-      }
-    },
     methods: {
       MenuClicked() {
         document.querySelector('#header').classList.toggle('drawer-meny-icon-open');
