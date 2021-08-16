@@ -180,7 +180,7 @@ export default {
 
         //抽選情報を取得
         await axios
-        .get("http://localhost:8000/api/room/" + this.LotteryId)
+        .get("http://160.251.14.192/api/room/" + this.LotteryId)
         .then(response => {
             this.LotteryInfo = response.data.data[0];
         })
@@ -188,7 +188,7 @@ export default {
 
         //メンバーを取得
         await axios
-        .get("http://localhost:8000/api/roomMemberGetmemmber/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+        .get("http://160.251.14.192/api/roomMemberGetmemmber/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
         .then(response => {
             this.memberArr = response.data.data;
         })
@@ -199,7 +199,7 @@ export default {
         //当選者リーダーを取得
         let leaderWinnerArr;
         await axios
-        .get("http://localhost:8000/api/LotteryResultGetLotteryResultMember/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+        .get("http://160.251.14.192/api/LotteryResultGetLotteryResultMember/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
         .then(response => {
             leaderWinnerArr = response.data.data;
         })
@@ -209,7 +209,7 @@ export default {
         let leaderWinnerIdArr = [];
         for(let i = 0; i < leaderWinnerArr.length; i++) {
             await axios
-            .get("http://localhost:8000/api/roomMemberGetLeaderId/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&member_name=" + leaderWinnerArr[i].leader_name)
+            .get("http://160.251.14.192/api/roomMemberGetLeaderId/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&member_name=" + leaderWinnerArr[i].leader_name)
             .then(response => {
                 leaderWinnerIdArr.push(response.data.data);
             })
@@ -219,7 +219,7 @@ export default {
         //リーダIDから当選者全体を取得
         for(let i = 0; i < leaderWinnerIdArr.length; i++) {
             await axios
-            .get("http://localhost:8000/api/getMemmberWhereJudg/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&group_judg=" + leaderWinnerIdArr[i][0].id)
+            .get("http://160.251.14.192/api/getMemmberWhereJudg/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&group_judg=" + leaderWinnerIdArr[i][0].id)
             .then(response => {
                 this.memberWinnerArr.push(response.data.data);
             })
@@ -301,7 +301,7 @@ export default {
             //DB登録済み名チェック
             let ValidationFlag = true;
             await axios
-            .get("http://localhost:8000/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+            .get("http://160.251.14.192/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
             .then(response => {
                 if(response.data.data == 'false') {
                     ValidationFlag = false;
@@ -317,7 +317,7 @@ export default {
             //代表者のIDを取得
             let leaderId;
             await axios
-            .get("http://localhost:8000/api/roomMemberGetMaxId")
+            .get("http://160.251.14.192/api/roomMemberGetMaxId")
             .then(response => {
                 leaderId = response.data.data + 1;
             })
@@ -342,7 +342,7 @@ export default {
             }
 
             await axios
-            .post("http://localhost:8000/api/roomMember/", sendData)
+            .post("http://160.251.14.192/api/roomMember/", sendData)
             .then(() => console.log("データベース登録完了"))
             .catch(error => console.log(error));
 
@@ -381,7 +381,7 @@ export default {
             //DB登録済み名チェック
             for(let i = 1; i < this.inputName.length; i++) {
                 await axios
-                .get("http://localhost:8000/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+                .get("http://160.251.14.192/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
                 .then(response => {
                     if(response.data.data == 'false') {
                         ValidationFlag = false;
@@ -398,7 +398,7 @@ export default {
             //代表者のIDを取得
             let leaderId;
             await axios
-            .get("http://localhost:8000/api/roomMemberGetMaxId")
+            .get("http://160.251.14.192/api/roomMemberGetMaxId")
             .then(response => {
                 leaderId = response.data.data + 1;
             })
@@ -430,7 +430,7 @@ export default {
                 }
                 
                 await axios
-                .post("http://localhost:8000/api/roomMember/", sendData)
+                .post("http://160.251.14.192/api/roomMember/", sendData)
                 .then(() => console.log("データベース登録完了"))
                 .catch(error => console.log(error));
             }

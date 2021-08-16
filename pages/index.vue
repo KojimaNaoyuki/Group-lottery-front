@@ -191,7 +191,7 @@ export default {
       //最後に登録されているグループidを取得
       let lastedId = 0;
       await axios
-      .get("http://localhost:8000/api/group")
+      .get("http://160.251.14.192/api/group")
       .then(response => {
         response.data.data.forEach(element => {
           lastedId = element.id;
@@ -253,8 +253,9 @@ export default {
         firebase_id: groupId,
         name: this.groupName
       }
+      console.log(sendData);
       await axios
-      .post("http://localhost:8000/api/group/", sendData)
+      .post("http://160.251.14.192/api/group/", sendData)
       .then(() => {
         console.log('データベース登録完了');
       })
