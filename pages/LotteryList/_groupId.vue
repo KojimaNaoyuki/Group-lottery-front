@@ -53,7 +53,7 @@ export default {
         
         //DB検索
         await axios
-        .get("http://160.251.14.192/api/group/" + dbGroupId)
+        .get("https://www.kwebk.xyz/api/group/" + dbGroupId)
         .then(response => {
             this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
             this.groupName = response.data.data[0].name; //groupNameを取得
@@ -72,7 +72,7 @@ export default {
 
         //ルーム取得
         await axios
-        .get("http://160.251.14.192/api/roomCustom?group_id=" + dbGroupId)
+        .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + dbGroupId)
         .then(response => {
             console.log(response.data.data);
             this.LotteryArr = response.data.data;

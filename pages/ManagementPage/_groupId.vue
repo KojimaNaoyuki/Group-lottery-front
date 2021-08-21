@@ -199,7 +199,7 @@ export default {
 
         //グループ情報を取得
         await axios
-        .get("http://160.251.14.192/api/group/" + this.dbGroupId)
+        .get("https://www.kwebk.xyz/api/group/" + this.dbGroupId)
         .then(response => {
             this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
             this.groupName = response.data.data[0].name; //groupNameを取得
@@ -208,7 +208,7 @@ export default {
 
         //ルーム情報を取得
         await axios
-        .get("http://160.251.14.192/api/roomCustom?group_id=" + this.dbGroupId)
+        .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + this.dbGroupId)
         .then(response => {
             this.lotteryTitleArr = response.data.data;
         })
@@ -334,7 +334,7 @@ export default {
             //抽選済みかどうかチェック
             let alreadyLotteryFlag = false;
             await axios
-            .get("http://160.251.14.192/api/LotteryResultValidationAlready/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            .get("https://www.kwebk.xyz/api/LotteryResultValidationAlready/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
             .then(response => {
                 if(!response.data.data) {
                     alreadyLotteryFlag = true;
@@ -352,7 +352,7 @@ export default {
             let lotteryMemberAll = [];
             let memberNum = [];
             await axios
-            .get("http://160.251.14.192/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
             .then(response => {
                 //メンバー全体を取得
                 lotteryMemberAll = response.data.data;
@@ -425,7 +425,7 @@ export default {
                         room_id: LotteryId
                     }
                     await axios
-                    .post("http://160.251.14.192/api/lotteryResult/", sendData)
+                    .post("https://www.kwebk.xyz/api/lotteryResult/", sendData)
                     .then(() => console.log("データベース登録完了"))
                     .catch(error => console.log(error));
                 }
@@ -436,7 +436,7 @@ export default {
                 public_private_info: false
             }
             await axios
-            .put("http://160.251.14.192/api/room/" + LotteryId, sendData)
+            .put("https://www.kwebk.xyz/api/room/" + LotteryId, sendData)
             .then(() => console.log('更新が完了しました'))
             .catch(error => console.log(error));
 
@@ -453,7 +453,7 @@ export default {
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
             await axios
-            .get("http://160.251.14.192/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
             .then(response => {
                 this.delMemberArr = response.data.data;
                 console.log(this.delMemberArr);
@@ -481,7 +481,7 @@ export default {
                         del_flag: true
                     }
                     await axios
-                    .put("http://160.251.14.192/api/roomMember/" + this.delMemberArr[i].id, sendData)
+                    .put("https://www.kwebk.xyz/api/roomMember/" + this.delMemberArr[i].id, sendData)
                     .then(() => console.log('更新が完了しました'))
                     .catch(error => console.log(error));
                 }
@@ -504,7 +504,7 @@ export default {
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
             await axios
-            .delete("http://160.251.14.192/api/room/" + LotteryId)
+            .delete("https://www.kwebk.xyz/api/room/" + LotteryId)
             .then(() => console.log("削除完了"))
             .catch(error => console.log(error));
 
