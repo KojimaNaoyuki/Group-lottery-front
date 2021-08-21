@@ -191,7 +191,7 @@ export default {
       //最後に登録されているグループidを取得
       let lastedId = 0;
       await axios
-      .get("https://www.kwebk.xyz/api/group")
+      .get("/api/group")
       .then(response => {
         response.data.data.forEach(element => {
           lastedId = element.id;
@@ -255,7 +255,7 @@ export default {
       }
       console.log(sendData);
       await axios
-      .post("https://www.kwebk.xyz/api/group/", sendData)
+      .post("/api/group/", sendData)
       .then(() => {
         console.log('データベース登録完了');
       })
