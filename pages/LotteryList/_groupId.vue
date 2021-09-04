@@ -31,6 +31,8 @@
 <script>
 import axios from "axios";
 import Btn from './../../components/presentational/atoms/Btn.vue';
+import firebase from '~/plugins/firebase';
+
 export default {
     layout: 'deepPageLayout',
     components: {
@@ -45,6 +47,10 @@ export default {
     },
     mounted: async function() {
         this.loaderDisplay(true); //ローダー開始
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        let groupRef = firebase.firestore().collection("groups");
+        let roomRef = firebase.firestore().collection("rooms");
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //グループIDを切り出す、DB検索用に
         let groupId =  this.$route.params.groupId;
@@ -52,13 +58,27 @@ export default {
         const dbGroupId = groupId.slice(0, groupIdLength);
         
         //DB検索
-        await axios
-        .get("https://www.kwebk.xyz/api/group/" + dbGroupId)
-        .then(response => {
-            this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
-            this.groupName = response.data.data[0].name; //groupNameを取得
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/group/" + dbGroupId)
+        // .then(response => {
+        //     this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
+        //     this.groupName = response.data.data[0].name; //groupNameを取得
+        // })
+        // .catch(error => console.log('エラー: ' + error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await groupRef.where('id', '==', Number(dbGroupId))
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.firebase_id = doc.data().firebase_id;
+                this.groupName = doc.data().name;
+            });
         })
-        .catch(error => console.log('エラー: ' + error));
+        .catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //グループidの検証
         console.log(groupId + ' == ' + this.firebase_id);
@@ -71,13 +91,25 @@ export default {
         }
 
         //ルーム取得
-        await axios
-        .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + dbGroupId)
-        .then(response => {
-            console.log(response.data.data);
-            this.LotteryArr = response.data.data;
-        })
-        .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + dbGroupId)
+        // .then(response => {
+        //     console.log(response.data.data);
+        //     this.LotteryArr = response.data.data;
+        // })
+        // .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await roomRef.where('group_id', '==', Number(dbGroupId))
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.LotteryArr.push(doc.data());
+            });
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         this.loaderDisplay(false); //ローダー終了
     },

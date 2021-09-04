@@ -45,13 +45,6 @@
                   <input type="password" placeholder="入力" class="input" v-model="password" name="パスワード">
                   <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
                 </validation-provider>
-
-                <div class="mtb"></div>
-
-                <validation-provider v-slot="ProviderProps" rules="min:8">
-                  <input type="password" placeholder="再度入力" class="input" v-model="passwordre" name="パスワード">
-                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-                </validation-provider>
               </label>
               
               <Btn text="登録" @clickedFn="register" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
@@ -178,7 +171,12 @@ export default {
     
     register: async function() {
       //アカウント新規作成(firebase)
+
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
       let firebaseOk = true;
+      let groupRef = firebase.firestore().collection("groups");
+      let roomRef = firebase.firestore().collection("rooms");
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
       //入力されているかの判定
       if(!this.email || !this.password) {
@@ -190,14 +188,24 @@ export default {
 
       //最後に登録されているグループidを取得
       let lastedId = 0;
-      await axios
-      .get("https://www.kwebk.xyz/api/group")
-      .then(response => {
-        response.data.data.forEach(element => {
-          lastedId = element.id;
+      //-------------------------------------------------// original API  //-------------------------------------------------//
+      // await axios
+      // .get("https://www.kwebk.xyz/api/group")
+      // .then(response => {
+      //   response.data.data.forEach(element => {
+      //     lastedId = element.id;
+      //   });
+      // })
+      // .catch(error => console.log('エラー: ' + error));
+      //-------------------------------------------------// original API  //-------------------------------------------------//
+
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+      await groupRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          lastedId = doc.data().id;
         });
-      })
-      .catch(error => console.log('エラー: ' + error));
+      });
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
       //グループIDを発行
       lastedId++;
@@ -206,6 +214,7 @@ export default {
       Number(groupId);
       console.log('groupId: ' + groupId);
       
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
       await firebase.auth()
       .createUserWithEmailAndPassword(this.email, this.password) //新規登録
       .then(data => {
@@ -233,37 +242,73 @@ export default {
             break
         }
       });
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
       if(!firebaseOk) {
         this.loaderDisplay(false); //ローダを終了
         return
       }
 
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
       await firebase.auth().currentUser.updateProfile({
         displayName: groupId
       }).then(() => {
         console.log('displayName設定完了');
       }).catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
       ////////////////////////////////////////////////////////////
       //DB登録
 
       //データベースに登録
-      const sendData = {
+      //-------------------------------------------------// original API  //-------------------------------------------------//
+      // const sendData = {
+      //   firebase_id: groupId,
+      //   name: this.groupName
+      // }
+      // console.log(sendData);
+      // await axios
+      // .post("https://www.kwebk.xyz/api/group/", sendData)
+      // .then(() => {
+      //   console.log('データベース登録完了');
+      // })
+      // .catch(error => console.log('エラー: ' + error));
+      //-------------------------------------------------// original API  //-------------------------------------------------//
+
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+      await groupRef.add({
+        id: lastedId,
         firebase_id: groupId,
         name: this.groupName
-      }
-      console.log(sendData);
-      await axios
-      .post("https://www.kwebk.xyz/api/group/", sendData)
-      .then(() => {
-        console.log('データベース登録完了');
       })
-      .catch(error => console.log('エラー: ' + error));
+      .then(() => console.log('firebase ok'))
+      .catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+      let roomId = 1;
+      await roomRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          roomId = doc.data().id + 1;
+        });
+      }).catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+      await roomRef.doc(String(roomId)).set({
+        group_id: Number(roomId),
+        id: Number(roomId),
+        lottery_day: '0000-00-00',
+        lottery_title: 'デモ抽選',
+        public_private_info: false
+      }).catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
       this.loaderDisplay(false); //ローダを終了
 
       alert('アカウントを作成しました\nグループIDは ' + groupId + ' です');
+
+      location.reload(); //リロード
     },
     login: async function() {
       //ログイン
@@ -272,6 +317,7 @@ export default {
         return;
       }
 
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
       firebase
       .auth()
       .signInWithEmailAndPassword(this.loginEmail, this.loginPassword)
@@ -279,6 +325,7 @@ export default {
         this.$router.push('/ManagementPage/' + this.groupInputId);
       })
       .catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
     },
 
     ToLotteryList: function() {

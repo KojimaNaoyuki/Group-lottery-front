@@ -116,6 +116,11 @@
                             <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
                         </div>
                     </div>
+                    <!-- <div class="member-list-contents-block" v-for="itemWrap in memberWinnerArr" :key="itemWrap.id">
+                        <div class="member-list-contents-group">
+                            <h4>{{itemWrap.member_name}}</h4>
+                        </div>
+                    </div> -->
                 </div>
 
                 <DownArrow />
@@ -143,6 +148,7 @@ import ListOpenIcon from './../../../components/presentational/atoms/ListOpenIco
 import Input from './../../../components/presentational/atoms/Input.vue';
 import Btn from './../../../components/presentational/atoms/Btn.vue';
 import DownArrow from './../../../components/presentational/atoms/DownArrow.vue';
+import firebase from '~/plugins/firebase';
 
 export default {
     layout: 'deepPageLayout',
@@ -161,6 +167,7 @@ export default {
             inputNum: 2,
             LotteryId: null,
             GroupId: null,
+            leaderId: 1,
             LotteryInfo: [],
             inputName: [],
             memberArr: [],
@@ -169,6 +176,12 @@ export default {
     },
     mounted: async function() {
         this.loaderDisplay(true); //ローダー開始
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        let roomRef = firebase.firestore().collection("rooms");
+        let roomMemberRef = firebase.firestore().collection("rooms_members");
+        let lotteryResultsRef = firebase.firestore().collection("lottery_results");
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //グループIDを取得
         let groupId =  this.$route.params.groupId;
@@ -179,52 +192,114 @@ export default {
         this.LotteryId = Number(this.$route.params.lotteryId);
 
         //抽選情報を取得
-        await axios
-        .get("https://www.kwebk.xyz/api/room/" + this.LotteryId)
-        .then(response => {
-            this.LotteryInfo = response.data.data[0];
-        })
-        .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/room/" + this.LotteryId)
+        // .then(response => {
+        //     this.LotteryInfo = response.data.data[0];
+        // })
+        // .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await roomRef.where('id', '==', Number(this.LotteryId))
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.LotteryInfo = doc.data();
+            });
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //メンバーを取得
-        await axios
-        .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
-        .then(response => {
-            this.memberArr = response.data.data;
-        })
-        .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+        // .then(response => {
+        //     this.memberArr = response.data.data;
+        // })
+        // .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
 
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await roomMemberRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.memberArr.push(doc.data());
+            })
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //当選者を取得
         //当選者リーダーを取得
-        let leaderWinnerArr;
-        await axios
-        .get("https://www.kwebk.xyz/api/LotteryResultGetLotteryResultMember/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
-        .then(response => {
-            leaderWinnerArr = response.data.data;
-        })
-        .catch(error => console.log(error));
+        let leaderWinnerArr = [];
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/LotteryResultGetLotteryResultMember/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+        // .then(response => {
+        //     leaderWinnerArr = response.data.data;
+        // })
+        // .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await lotteryResultsRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                leaderWinnerArr.push(doc.data());
+            })
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //リーダ名から当選者IDを取得
         let leaderWinnerIdArr = [];
         for(let i = 0; i < leaderWinnerArr.length; i++) {
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberGetLeaderId/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&member_name=" + leaderWinnerArr[i].leader_name)
-            .then(response => {
-                leaderWinnerIdArr.push(response.data.data);
-            })
-            .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberGetLeaderId/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&member_name=" + leaderWinnerArr[i].leader_name)
+            // .then(response => {
+            //     leaderWinnerIdArr.push(response.data.data);
+            // })
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomMemberRef.where('group_id', '==', Number(this.GroupId)).where('room_id', '==', Number(this.LotteryId)).where('member_name', '==', String(leaderWinnerArr[i].leader_name))
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    leaderWinnerIdArr.push(doc.data());
+                });
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
         }
 
         //リーダIDから当選者全体を取得
         for(let i = 0; i < leaderWinnerIdArr.length; i++) {
-            await axios
-            .get("https://www.kwebk.xyz/api/getMemmberWhereJudg/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&group_judg=" + leaderWinnerIdArr[i][0].id)
-            .then(response => {
-                this.memberWinnerArr.push(response.data.data);
-            })
-            .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .get("https://www.kwebk.xyz/api/getMemmberWhereJudg/?group_id=" + this.GroupId + "&room_id=" + this.LotteryId + "&group_judg=" + leaderWinnerIdArr[i][0].id)
+            // .then(response => {
+            //     this.memberWinnerArr.push(response.data.data);
+            // })
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let tmp = [];
+            await roomMemberRef.where('group_id', '==', Number(this.GroupId)).where('room_id', '==', Number(this.LotteryId)).where('group_judg', '==', Number(leaderWinnerIdArr[i].id)).where('del_flag', '==', false)
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    tmp.push(doc.data());
+                });
+                this.memberWinnerArr.push(tmp);
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
         }
+        console.log(this.memberWinnerArr);
 
         this.loaderDisplay(false); //ローダー終了
     },
@@ -297,17 +372,26 @@ export default {
 
             this.loaderDisplay(true); //ローダーを開始
 
+            let roomsMembersRef = firebase.firestore().collection("rooms_members");
+
             //同一名で登録されていないか確認
             //DB登録済み名チェック
             let ValidationFlag = true;
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
-            .then(response => {
-                if(response.data.data == 'false') {
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+            // .then(response => {
+            //     if(response.data.data == 'false') {
+            //         ValidationFlag = false;
+            //     }
+            // })
+            // .catch(error => console.log(error));
+            await roomsMembersRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId).where('member_name', '==', this.inputName[0])
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
                     ValidationFlag = false;
-                }
-            })
-            .catch(error => console.log(error));
+                });
+            }).catch(error => console.log(error));
             if(!ValidationFlag) {
                 this.loaderDisplay(false); //ローダー終了
                 alert('同じ名前が使用されています');
@@ -316,12 +400,17 @@ export default {
 
             //代表者のIDを取得
             let leaderId;
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
-            .then(response => {
-                leaderId = response.data.data + 1;
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
+            // .then(response => {
+            //     leaderId = response.data.data + 1;
+            // })
+            // .catch(error => console.log(error));
+            await roomsMembersRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    this.leaderId = doc.data().id + 1;
+                })
             })
-            .catch(error => console.log(error));
 
             let selectNum;
 
@@ -331,24 +420,38 @@ export default {
             selectNum = document.formSelect.status.selectedIndex;
             const status = document.formSelect.status.options[selectNum].value;
 
-            const sendData = {
+            // const sendData = {
+                // member_name: this.inputName[0],
+                // school_year: schoolYear,
+                // status: status,
+                // group_judg: leaderId,
+                // group_id: this.GroupId,
+                // room_id: this.LotteryId,
+                // del_flag: false
+            // }
+
+            // await axios
+            // .post("https://www.kwebk.xyz/api/roomMember/", sendData)
+            // .then(() => console.log("データベース登録完了"))
+            // .catch(error => console.log(error));
+            await roomsMembersRef.doc(String(this.leaderId)).set({
+                id: Number(this.leaderId),
                 member_name: this.inputName[0],
                 school_year: schoolYear,
                 status: status,
-                group_judg: leaderId,
+                group_judg: Number(this.leaderId),
                 group_id: this.GroupId,
                 room_id: this.LotteryId,
                 del_flag: false
-            }
-
-            await axios
-            .post("https://www.kwebk.xyz/api/roomMember/", sendData)
-            .then(() => console.log("データベース登録完了"))
+            })
+            .then(() => console.log('firebase ok'))
             .catch(error => console.log(error));
 
             this.loaderDisplay(false); //ローダー終了
 
             alert('登録しました');
+
+            location.reload(); //リロード
         },
         registerMemberMulti: async function() {
             //メンバー登録 複数人
@@ -378,16 +481,25 @@ export default {
 
             this.loaderDisplay(true); //ローダーを開始
 
+            let roomsMembersRef = firebase.firestore().collection("rooms_members");
+
             //DB登録済み名チェック
             for(let i = 1; i < this.inputName.length; i++) {
-                await axios
-                .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
-                .then(response => {
-                    if(response.data.data == 'false') {
+                // await axios
+                // .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
+                // .then(response => {
+                //     if(response.data.data == 'false') {
+                //         ValidationFlag = false;
+                //     }
+                // })
+                // .catch(error => console.log(error));
+                await roomsMembersRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId).where('member_name', '==', this.inputName[i])
+                .get()
+                .then(querySnapshot => {
+                    querySnapshot.forEach(doc => {
                         ValidationFlag = false;
-                    }
-                })
-                .catch(error => console.log(error));
+                    });
+                }).catch(error => console.log(error));
             }
             if(!ValidationFlag) {
                 this.loaderDisplay(false); //ローダー終了
@@ -397,12 +509,17 @@ export default {
 
             //代表者のIDを取得
             let leaderId;
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
-            .then(response => {
-                leaderId = response.data.data + 1;
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
+            // .then(response => {
+            //     leaderId = response.data.data + 1;
+            // })
+            // .catch(error => console.log(error));
+            await roomsMembersRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    this.leaderId = doc.data().id + 1;
+                })
             })
-            .catch(error => console.log(error));
 
             let selectNum;
             let schoolYear;
@@ -419,25 +536,39 @@ export default {
                 str += '.options[' + selectNum + '].' + 'value';
                 status = eval(str);
 
-                const sendData = {
+                // const sendData = {
+                //     member_name: this.inputName[i],
+                //     school_year: schoolYear,
+                //     status: status,
+                //     group_judg: leaderId,
+                //     group_id: this.GroupId,
+                //     room_id: this.LotteryId,
+                //     del_flag: false
+                // }
+                
+                // await axios
+                // .post("https://www.kwebk.xyz/api/roomMember/", sendData)
+                // .then(() => console.log("データベース登録完了"))
+                // .catch(error => console.log(error));
+                await roomsMembersRef.doc(String(this.leaderId+(i-1))).set({
+                    id: Number(this.leaderId+(i-1)),
                     member_name: this.inputName[i],
                     school_year: schoolYear,
                     status: status,
-                    group_judg: leaderId,
+                    group_judg: Number(this.leaderId),
                     group_id: this.GroupId,
                     room_id: this.LotteryId,
                     del_flag: false
-                }
-                
-                await axios
-                .post("https://www.kwebk.xyz/api/roomMember/", sendData)
-                .then(() => console.log("データベース登録完了"))
+                })
+                .then(() => console.log('firebase ok'))
                 .catch(error => console.log(error));
             }
 
             this.loaderDisplay(false); //ローダー終了
 
             alert("登録しました");
+
+            location.reload(); //リロード
         },
         loaderDisplay: function(state) {
             //ローダーの表示

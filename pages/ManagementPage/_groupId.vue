@@ -53,8 +53,9 @@
 
                     <div class="link-copy-box">
                         <h4 class="link-copy-box-title">抽選リンク</h4>
-                        <input type="text" value="http://localhost:3000/ManagementPage/13416" readonly class="link-copy-box-text" id="copyTg">
+                        <input type="text" value="https://group-lottery-3409e.web.app" readonly class="link-copy-box-text" id="copyTg">
                         <img src="~/assets/img/copy.png" alt="copy" class="link-copy-box-img" @click="linkCopy">
+                        <img src="~/assets/img/reload.png" alt="reload" class="link-copy-box-img" @click="linkSet(true)">
                     </div>
 
                     <label class="list-label">
@@ -192,29 +193,59 @@ export default {
 
         this.loaderDisplay(true); //ローダー開始
 
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        let groupRef = firebase.firestore().collection("groups");
+        let roomRef = firebase.firestore().collection("rooms");
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
         //グループIDを切り出す、DB検索用に
         let groupId =  this.$route.params.groupId;
         let groupIdLength = groupId.length-4;
         this.dbGroupId = groupId.slice(0, groupIdLength);
 
         //グループ情報を取得
-        await axios
-        .get("https://www.kwebk.xyz/api/group/" + this.dbGroupId)
-        .then(response => {
-            this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
-            this.groupName = response.data.data[0].name; //groupNameを取得
-        })
-        .catch(error => console.log('エラー: ' + error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/group/" + this.dbGroupId)
+        // .then(response => {
+        //     this.firebase_id = response.data.data[0].firebase_id; //firebase_idを取得
+        //     this.groupName = response.data.data[0].name; //groupNameを取得
+        // })
+        // .catch(error => console.log('エラー: ' + error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await groupRef.where('id', '==', Number(this.dbGroupId))
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.firebase_id = doc.data().firebase_id;
+                this.groupName = doc.data().name;
+            });
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
         //ルーム情報を取得
-        await axios
-        .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + this.dbGroupId)
-        .then(response => {
-            this.lotteryTitleArr = response.data.data;
-        })
-        .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
+        // await axios
+        // .get("https://www.kwebk.xyz/api/roomCustom?group_id=" + this.dbGroupId)
+        // .then(response => {
+        //     this.lotteryTitleArr = response.data.data;
+        // })
+        // .catch(error => console.log(error));
+        //-------------------------------------------------// original API  //-------------------------------------------------//
 
-        this.linkSet();
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+        await roomRef.where('group_id', '==', Number(this.dbGroupId))
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(doc => {
+                this.lotteryTitleArr.push(doc.data());
+            });
+        }).catch(error => console.log(error));
+        //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+        this.linkSet(false);
 
         this.loaderDisplay(false); //ローダー終了
     },
@@ -295,10 +326,21 @@ export default {
             this.loaderDisplay(true); //ローダー開始
 
             //DBアップデート
-            await axios
-            .put("http://160.251.14.192/api/room/" + LotteryId, sendData)
-            .then(() => console.log('更新が完了しました'))
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .put("http://160.251.14.192/api/room/" + LotteryId, sendData)
+            // .then(() => console.log('更新が完了しました'))
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let roomRef = firebase.firestore().collection("room");
+            roomRef.doc(String(LotteryId)).update({
+                public_private_info: sendData.public_private_info
+            })
+            .then(() => console.log('firebase ok'))
             .catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             this.loaderDisplay(false); //ローダー終了
 
@@ -308,39 +350,87 @@ export default {
             //抽選を作成
             this.loaderDisplay(true); //ローダー開始
 
-            const sendData = {
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let roomRef = firebase.firestore().collection("rooms");
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // const sendData = {
+                // lottery_title: this.LotteryName,
+                // public_private_info: true,
+                // lottery_day: this.LotteryDay,
+                // group_id: this.dbGroupId
+            // }
+            // await axios
+            // .post("http://160.251.14.192/api/room/", sendData)
+            // .then(() => console.log("データベース登録完了"))
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            let id = 1;
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    console.log(doc.data().id + 1);
+                    id = doc.data().id + 1;
+                })
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomRef.doc(String(id)).set({
+                id: id,
                 lottery_title: this.LotteryName,
                 public_private_info: true,
                 lottery_day: this.LotteryDay,
-                group_id: this.dbGroupId
-            }
-            await axios
-            .post("http://160.251.14.192/api/room/", sendData)
-            .then(() => console.log("データベース登録完了"))
+                group_id: Number(this.dbGroupId)
+            })
+            .then(() => console.log('firebase ok'))
             .catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             this.loaderDisplay(false); //ローダー終了
 
             alert('投票を作成しました');
+
+            location.reload(); //リロード
         },
         lottery: async function() {
             //抽選
 
             this.loaderDisplay(true); //ローダー開始
 
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let lotteryResultRef = firebase.firestore().collection("lottery_results");
+            let roomsMembersRef = firebase.firestore().collection("rooms_members");
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
             //抽選済みかどうかチェック
             let alreadyLotteryFlag = false;
-            await axios
-            .get("https://www.kwebk.xyz/api/LotteryResultValidationAlready/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
-            .then(response => {
-                if(!response.data.data) {
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .get("https://www.kwebk.xyz/api/LotteryResultValidationAlready/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            // .then(response => {
+            //     if(!response.data.data) {
+            //         alreadyLotteryFlag = true;
+            //     }
+            // })
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await lotteryResultRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId))
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(() => {
                     alreadyLotteryFlag = true;
-                }
-            })
-            .catch(error => console.log(error));
+                });
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
             if(alreadyLotteryFlag) {
                 this.loaderDisplay(false); //ローダー終了
                 alert('すでに抽選が行われています');
@@ -351,23 +441,58 @@ export default {
             let lotteryMembers = [];
             let lotteryMemberAll = [];
             let memberNum = [];
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
-            .then(response => {
-                //メンバー全体を取得
-                lotteryMemberAll = response.data.data;
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            // .then(response => {
+            //     //メンバー全体を取得
+            //     lotteryMemberAll = response.data.data;
 
-                //代表者ごとメンバー人数取得
-                memberNum = response.data.memberNum;
+            //     //代表者ごとメンバー人数取得
+            //     memberNum = response.data.memberNum;
 
-                //代表者だけを抽出
-                response.data.data.forEach(element => {
-                    if(element.id == element.group_judg && !element.del_flag) {
-                        lotteryMembers.push(element.member_name);
+            //     //代表者だけを抽出
+            //     response.data.data.forEach(element => {
+            //         if(element.id == element.group_judg && !element.del_flag) {
+            //             lotteryMembers.push(element.member_name);
+            //         }
+            //     });
+            // })
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomsMembersRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId))
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    //メンバー全体を取得
+                    lotteryMemberAll.push(doc.data());
+
+                    //代表者だけを抽出
+                    if(doc.data().id == doc.data().group_judg) {
+                        lotteryMembers.push(doc.data().member_name);
                     }
                 });
-            })
-            .catch(error => console.log(error));
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            for(let i = 0; i < lotteryMemberAll.length; i++) {
+                //代表者ごとメンバー人数取得
+                if(lotteryMemberAll[i].id == lotteryMemberAll[i].group_judg) {
+                    let count = 0;
+                    await roomsMembersRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId)).where('group_judg', '==', lotteryMemberAll[i].group_judg)
+                    .get()
+                    .then(querySnapshot => {
+                        querySnapshot.forEach(() => {
+                            count++;
+                        });
+                        memberNum[lotteryMemberAll[i].member_name] = count;
+                    }).catch(error => console.log(error));
+                }
+            }
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             //シャッフル
             for(let i = (lotteryMembers.length-1); 0 < i; i--) {
@@ -393,7 +518,8 @@ export default {
                     name: element,
                     schoolYear: schoolYear,
                     status: status,
-                    member_num: memberNum[element].member_num
+                    // member_num: memberNum[element].member_num
+                    member_num: memberNum[element]
                 }
             });
 
@@ -413,21 +539,39 @@ export default {
 
             this.loaderDisplay(true); //ローダー開始
 
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let lotteryResultsRef = firebase.firestore().collection("lottery_results");
+            let roomRef = firebase.firestore().collection("rooms");
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
             for(let i = 0; i < this.lotteryMemberArr.length; i++) {
                 if(document.querySelector('#lotteryCheckbox' + (i+1)).checked) {
-                    const sendData = {
+                    //-------------------------------------------------// original API  //-------------------------------------------------//
+                    // const sendData = {
+                        // leader_name: this.lotteryMemberArr[i].name,
+                        // order: this.lotteryMemberArr[i].order,
+                        // group_id: this.dbGroupId,
+                        // room_id: LotteryId
+                    // }
+                    // await axios
+                    // .post("https://www.kwebk.xyz/api/lotteryResult/", sendData)
+                    // .then(() => console.log("データベース登録完了"))
+                    // .catch(error => console.log(error));
+                    //-------------------------------------------------// original API  //-------------------------------------------------//
+
+                    //-------------------------------------------------//  firebase  //-------------------------------------------------//
+                    await lotteryResultsRef.add({
                         leader_name: this.lotteryMemberArr[i].name,
                         order: this.lotteryMemberArr[i].order,
-                        group_id: this.dbGroupId,
-                        room_id: LotteryId
-                    }
-                    await axios
-                    .post("https://www.kwebk.xyz/api/lotteryResult/", sendData)
-                    .then(() => console.log("データベース登録完了"))
+                        group_id: Number(this.dbGroupId),
+                        room_id: Number(LotteryId)
+                    })
+                    .then(() => console.log('firebase ok'))
                     .catch(error => console.log(error));
+                    //-------------------------------------------------//  firebase  //-------------------------------------------------//
                 }
             }
 
@@ -435,14 +579,26 @@ export default {
             const sendData = {
                 public_private_info: false
             }
-            await axios
-            .put("https://www.kwebk.xyz/api/room/" + LotteryId, sendData)
-            .then(() => console.log('更新が完了しました'))
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .put("https://www.kwebk.xyz/api/room/" + LotteryId, sendData)
+            // .then(() => console.log('更新が完了しました'))
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomRef.doc(String(LotteryId)).update({
+                public_private_info: sendData.public_private_info
+            })
+            .then(() => console.log('firebase ok'))
             .catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             this.loaderDisplay(false); //ローダー終了
 
             alert('当選者を確定しました');
+
+            location.reload(); //リロード
         },
         delMemberDisplay: async function() {
             //抽選登録者削除処理 メンバー取得
@@ -452,13 +608,26 @@ export default {
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
-            await axios
-            .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
-            .then(response => {
-                this.delMemberArr = response.data.data;
-                console.log(this.delMemberArr);
-            })
-            .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .get("https://www.kwebk.xyz/api/roomMemberGetmemmber/?group_id=" + this.dbGroupId + "&room_id=" + LotteryId)
+            // .then(response => {
+            //     this.delMemberArr = response.data.data;
+            //     console.log(this.delMemberArr);
+            // })
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let roomRef = firebase.firestore().collection("rooms_members");
+            await roomRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId))
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    this.delMemberArr.push(doc.data());
+                });
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             //描画
             this.listOpen(1);
@@ -472,24 +641,36 @@ export default {
 
             this.loaderDisplay(true); //ローダー開始
 
-            //↓未完成(バックエンド側に問題あり idが届いてなくて更新できず)
             let sendData;
             for(let i = 0; i < this.delMemberArr.length; i++) {
                 if(document.querySelector('#delCheckbox' + (this.delMemberArr[i].id)).checked) {
-                    sendData = {
-                        id: this.delMemberArr[i].id,
+                    //-------------------------------------------------// original API  //-------------------------------------------------//
+                    // sendData = {
+                    //     id: this.delMemberArr[i].id,
+                    //     del_flag: true
+                    // }
+                    // await axios
+                    // .put("https://www.kwebk.xyz/api/roomMember/" + this.delMemberArr[i].id, sendData)
+                    // .then(() => console.log('更新が完了しました'))
+                    // .catch(error => console.log(error));
+                    //-------------------------------------------------// original API  //-------------------------------------------------//
+
+                    //-------------------------------------------------//  firebase  //-------------------------------------------------//
+                    let roomRef = firebase.firestore().collection("rooms_members");
+                    await roomRef.doc(String(this.delMemberArr[i].id)).update({
                         del_flag: true
-                    }
-                    await axios
-                    .put("https://www.kwebk.xyz/api/roomMember/" + this.delMemberArr[i].id, sendData)
-                    .then(() => console.log('更新が完了しました'))
+                    })
+                    .then(() => console.log('firebase ok'))
                     .catch(error => console.log(error));
+                    //-------------------------------------------------//  firebase  //-------------------------------------------------//
                 }
             }
 
             this.loaderDisplay(false); //ローダー終了
 
             alert('削除しました');
+
+            location.reload(); //リロード
         },
         deleteLottery: async function() {
             //抽選を削除
@@ -500,17 +681,47 @@ export default {
 
             this.loaderDisplay(true); //ローダー開始
 
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let roomRef = firebase.firestore().collection("rooms");
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
-            await axios
-            .delete("https://www.kwebk.xyz/api/room/" + LotteryId)
-            .then(() => console.log("削除完了"))
-            .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+            // await axios
+            // .delete("https://www.kwebk.xyz/api/room/" + LotteryId)
+            // .then(() => console.log("削除完了"))
+            // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let firebaseFlag = true;
+            await roomRef.doc(String(LotteryId))
+            .get()
+            .then(doc => {
+                if(doc.data().lottery_title == 'デモ抽選') {
+                    firebaseFlag = false;
+                }
+            }).catch(error => console.log(error));
+            if(!firebaseFlag) {
+                alert('この抽選は削除できません');
+                this.loaderDisplay(false); //ローダー終了
+                return;
+            }
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            await roomRef.doc(String(LotteryId)).delete().then(() => {
+                console.log('firebase ok');
+            }).catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             this.loaderDisplay(false); //ローダー終了
 
             alert('削除しました');
+
+            location.reload(); //リロード
         },
         logout: function() {
             //ログアウト
@@ -546,13 +757,17 @@ export default {
                 tg.classList.remove('rod-on');
             }
         },
-        linkSet: function() {
+        linkSet: function(msFlag) {
             //抽選リンクを作成
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
-            document.querySelector('#copyTg').value = 'http://localhost:3000/LotteryPage/' + this.$route.params.groupId + '/' + LotteryId;
+            document.querySelector('#copyTg').value = 'https://group-lottery-3409e.web.app/' + this.$route.params.groupId + '/' + LotteryId;
             console.log('リンクを作成');
+
+            if(msFlag) {
+                alert('リンクを作成しました\nリンクをコピーしてメンバーに知らせましょう');
+            }
         },
         linkCopy: function() {
             //抽選リンクのコピー

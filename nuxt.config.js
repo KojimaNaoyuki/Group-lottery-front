@@ -15,7 +15,7 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: 'サークル活動や団体での人数調整お困りではないですか？Group Selectorでは、個人はもちろんグループごとにまとまって抽選を行うことができます。団体の人数調整に最適です。' },
-      { hid: 'keywords', name: 'keywords', content: 'Group Selector,抽選,人数調整,団体抽選,サークル抽選' }
+      // { hid: 'keywords', name: 'keywords', content: 'Group Selector,抽選,人数調整,団体抽選,サークル抽選' }
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
@@ -48,11 +48,6 @@ export default {
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-    proxy: true,
-  },
-
-  proxy: {
-    '/api/': 'https://www.kwebk.xyz',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
