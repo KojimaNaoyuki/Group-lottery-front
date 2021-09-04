@@ -115,7 +115,6 @@ import Input from './../components/presentational/atoms/Input.vue';
 import ListOpenIcon from './../components/presentational/atoms/ListOpenIcon.vue';
 import Btn from './../components/presentational/atoms/Btn.vue';
 import DownArrow from './../components/presentational/atoms/DownArrow.vue';
-import func from 'vue-editor-bridge';
 
 export default {
   layout: 'main',
