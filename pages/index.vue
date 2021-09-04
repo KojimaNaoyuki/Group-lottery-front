@@ -306,7 +306,7 @@ export default {
 
       this.loaderDisplay(false); //ローダを終了
 
-      alert('アカウントを作成しました\nグループIDは ' + groupId + ' です');
+      alert('アカウントを作成しました\nグループIDは ' + groupId + ' です\n必ず忘れないようにしてください');
 
       location.reload(); //リロード
     },
