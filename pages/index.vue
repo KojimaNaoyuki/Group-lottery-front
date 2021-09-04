@@ -115,6 +115,7 @@ import Input from './../components/presentational/atoms/Input.vue';
 import ListOpenIcon from './../components/presentational/atoms/ListOpenIcon.vue';
 import Btn from './../components/presentational/atoms/Btn.vue';
 import DownArrow from './../components/presentational/atoms/DownArrow.vue';
+import func from 'vue-editor-bridge';
 
 export default {
   layout: 'main',
@@ -135,6 +136,12 @@ export default {
       groupInputId: null,
       loginEmail: null,
       loginPassword: null
+    }
+  },
+  mounted: function() {
+    let confirmResult = confirm('本サービスは急遽サービスを終了する可能性があります\n\n本サービスを利用して何か不利益を被ることがあっても保証しません\n\nご利用は自己責任でお願いします');
+    if(!confirmResult) {
+      this.$router.push('/');
     }
   },
   methods: {
