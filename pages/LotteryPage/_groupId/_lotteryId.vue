@@ -116,11 +116,6 @@
                             <h4 v-for="item in itemWrap" :key="item.id">{{item.member_name}}</h4>
                         </div>
                     </div>
-                    <!-- <div class="member-list-contents-block" v-for="itemWrap in memberWinnerArr" :key="itemWrap.id">
-                        <div class="member-list-contents-group">
-                            <h4>{{itemWrap.member_name}}</h4>
-                        </div>
-                    </div> -->
                 </div>
 
                 <DownArrow />

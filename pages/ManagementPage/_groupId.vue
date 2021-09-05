@@ -99,6 +99,7 @@
                         </div>
                         <div class="list-lottery-leader" v-for="item in delMemberArr" :key="item.id">
                             <input type="checkbox" class="list-lottery-leader-check" :id="'delCheckbox' + item.id" v-if="!item.del_flag">
+                            <input type="hidden" :id="'delCheckbox' + item.id" v-if="item.del_flag">
                             <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.member_name}}</h4>
                             <h4 class="list-lottery-leader-text" v-if="!item.del_flag">{{item.school_year | otherYear}}</h4>
                             <h4 class="list-lottery-leader-text" v-if="item.status == 'join' && !item.del_flag">参加</h4>
@@ -482,7 +483,7 @@ export default {
                 //代表者ごとメンバー人数取得
                 if(lotteryMemberAll[i].id == lotteryMemberAll[i].group_judg) {
                     let count = 0;
-                    await roomsMembersRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId)).where('group_judg', '==', lotteryMemberAll[i].group_judg)
+                    await roomsMembersRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId)).where('group_judg', '==', lotteryMemberAll[i].group_judg).where('del_flag', '==', false)
                     .get()
                     .then(querySnapshot => {
                         querySnapshot.forEach(() => {
@@ -619,8 +620,8 @@ export default {
             //-------------------------------------------------// original API  //-------------------------------------------------//
 
             //-------------------------------------------------//  firebase  //-------------------------------------------------//
-            let roomRef = firebase.firestore().collection("rooms_members");
-            await roomRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId))
+            let roomsMembersRef = firebase.firestore().collection("rooms_members");
+            await roomsMembersRef.where('group_id', '==', Number(this.dbGroupId)).where('room_id', '==', Number(LotteryId))
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(doc => {
@@ -641,8 +642,24 @@ export default {
 
             this.loaderDisplay(true); //ローダー開始
 
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let roomsMembersRef = firebase.firestore().collection("rooms_members");
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+            let lastId = 1;
+            await roomsMembersRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
+                querySnapshot.forEach(doc => {
+                    lastId = doc.data().id;
+                })
+            }).catch(error => console.log(error));
+            console.log(lastId);
+            console.log(this.delMemberArr);
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
+
             let sendData;
             for(let i = 0; i < this.delMemberArr.length; i++) {
+                console.log(this.delMemberArr[i].id);
                 if(document.querySelector('#delCheckbox' + (this.delMemberArr[i].id)).checked) {
                     //-------------------------------------------------// original API  //-------------------------------------------------//
                     // sendData = {
@@ -656,8 +673,7 @@ export default {
                     //-------------------------------------------------// original API  //-------------------------------------------------//
 
                     //-------------------------------------------------//  firebase  //-------------------------------------------------//
-                    let roomRef = firebase.firestore().collection("rooms_members");
-                    await roomRef.doc(String(this.delMemberArr[i].id)).update({
+                    await roomsMembersRef.doc(String(this.delMemberArr[i].id)).update({
                         del_flag: true
                     })
                     .then(() => console.log('firebase ok'))
