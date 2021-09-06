@@ -335,7 +335,7 @@ export default {
             //-------------------------------------------------// original API  //-------------------------------------------------//
 
             //-------------------------------------------------//  firebase  //-------------------------------------------------//
-            let roomRef = firebase.firestore().collection("room");
+            let roomRef = firebase.firestore().collection("rooms");
             roomRef.doc(String(LotteryId)).update({
                 public_private_info: sendData.public_private_info
             })
