@@ -778,7 +778,7 @@ export default {
             const selectNum = document.formSelect.lotterySelect.selectedIndex;
             const LotteryId = document.formSelect.lotterySelect.options[selectNum].value;
 
-            document.querySelector('#copyTg').value = 'https://group-lottery-3409e.web.app/LotteryList/' + this.$route.params.groupId + '/' + LotteryId;
+            document.querySelector('#copyTg').value = 'https://group-lottery-3409e.web.app/LotteryPage/' + this.$route.params.groupId + '/' + LotteryId;
             console.log('リンクを作成');
 
             if(msFlag) {
