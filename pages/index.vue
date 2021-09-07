@@ -520,6 +520,7 @@ export default {
   height: 100vh;
   background-color: black;
   opacity: 0.4;
+  z-index: 100;
 }
 .agreement .ms-back {
   display: none;
@@ -532,6 +533,7 @@ export default {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: #fff;
+  z-index: 100;
 }
 .agreement .start-ms {
   display: none;
@@ -549,11 +551,15 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  padding: 3px 10px;
+  padding: 3px 15px;
   border: none;
-  font-size: 12px;
+  font-size: 13px;
   background-color: #2382ce;
   color: #FFF;
+}
+.start-ms-btn:hover {
+  cursor: pointer;
+  opacity: 0.6;
 }
 
 
