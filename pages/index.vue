@@ -105,6 +105,18 @@
       <span></span>
       <span></span>
     </div>
+
+    <div class="ms-back"></div>
+    <div class="start-ms">
+      <h2>注意事項</h2>
+      <p>本サービスは、自主利用及び自主学習のため開発されました。そのため、広く一般に公開されている物ではありません。</p>
+      <p>グループ名、抽選名、抽選に登録する名前は公開されます。個人情報は記載しないでください。</p>
+      <p>主催者ログインに必要なメールアドレスは存在しない架空のメールアドレスをご利用頂けます。</p>
+      <p>本サービスは正式に公開しているサービスではないためセキュリティが不十分な可能性がございます。従って、架空のメールアドレスを使用することを推奨します。</p>
+      <p>例) ×××@〇〇〇.com</p>
+      <p>ご利用は自己責任でお願いします。</p>
+      <button class="start-ms-btn" @click="agreement">確認しました</button>
+    </div>
   </div>
 </template>
 
@@ -138,7 +150,6 @@ export default {
     }
   },
   mounted: function() {
-    alert('本サービスは、自主利用及び自主学習のため開発されました。\nそのため、広く一般に公開されている物ではありません。\n\n主催者の登録にメールアドレスを使用します。\nメールアドレスは形式が正しければ架空のメールアドレスをご利用頂けます。\n本サービスは正式に公開しているサービスではないためセキュリティが不十分な可能性がございます。\n従って、架空のメールアドレスの使用を推奨します。\n\nご利用は自己責任でお願いします');
   },
   methods: {
     listOpen: function(num) {
@@ -344,6 +355,12 @@ export default {
       } else {
         tg.classList.remove('rod-on');
       }
+    },
+
+    agreement: function() {
+      //注意事項
+      console.log('sss');
+      document.querySelector('#global-contents').classList.add('agreement');
     }
   }
 };
@@ -493,6 +510,50 @@ export default {
   text-align: right;
   font-size: 14px;
   color: #a73f1e;
+}
+
+.ms-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: black;
+  opacity: 0.4;
+}
+.agreement .ms-back {
+  display: none;
+}
+.start-ms {
+  padding: 8px 5px 25px;
+  width: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+}
+.agreement .start-ms {
+  display: none;
+}
+.start-ms > h2 {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #e22424;
+}
+.start-ms > p {
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+.start-ms-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 3px 10px;
+  border: none;
+  font-size: 12px;
+  background-color: #2382ce;
+  color: #FFF;
 }
 
 
