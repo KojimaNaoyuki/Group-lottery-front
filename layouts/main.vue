@@ -41,8 +41,8 @@ export default {
 
 @media screen and (min-width: 1060px) {
     .boxMain {
-      display: flex;
-      flex-wrap: wrap;
+      width: calc(100vw - 17px);
+      padding: 0 0 0 201px;
     }
 }
 </style>

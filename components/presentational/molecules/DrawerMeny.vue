@@ -47,7 +47,7 @@ a {
 
 .drawer-menu {
     visibility: hidden;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 0vh;
@@ -61,7 +61,7 @@ a {
 
 .drawer-menu-open .drawer-menu {
     visibility: visible;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
@@ -96,7 +96,7 @@ a {
 @media screen and (min-width: 1060px) {
     .drawer-menu {
         display: block;
-        position: relative;
+        position: fixed;
         visibility: visible;
         height: 110vh;
         opacity: 1.0;

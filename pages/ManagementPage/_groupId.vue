@@ -1022,7 +1022,8 @@ a {
 
 @media screen and (min-width: 1060px) {
     .box {
-      width: calc(100vw - 201px);
+      width: 100vw;
+      padding: 0 0 0 201px;
     }
 }
 </style>

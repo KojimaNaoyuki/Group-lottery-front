@@ -565,7 +565,7 @@ export default {
 
 @media screen and (min-width: 1060px) {
     .wrap {
-      width: calc(100vw - 201px);
+      /* width: calc(100vw - 201px); */
     }
 }
 </style>
