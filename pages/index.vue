@@ -115,6 +115,12 @@
       <p>本サービスは正式に公開しているサービスではないためセキュリティが不十分な可能性がございます。従って、架空のメールアドレスを使用することを推奨します。</p>
       <p>例) ×××@〇〇〇.com</p>
       <p>ご利用は自己責任でお願いします。</p>
+      <p>一般に公開されているサービスではないため、利用許可コードをお持ちの方のみのご利用をお願い申し上げます。</p>
+      <p>利用許可コードを入力し、「確認しました」のクリックをお願いします。クリックしたことで、上記記載内容に同意したこととします。</p>
+      <label class="start-ms-label">
+        利用許可コード
+        <input type="text" v-model="permissionPs" class="start-ms-input" placeholder="コードを入力">
+      </label>
       <button class="start-ms-btn" @click="agreement">確認しました</button>
     </div>
   </div>
@@ -146,7 +152,8 @@ export default {
       passwordre: null,
       groupInputId: null,
       loginEmail: null,
-      loginPassword: null
+      loginPassword: null,
+      permissionPs: null
     }
   },
   mounted: function() {
@@ -359,8 +366,11 @@ export default {
 
     agreement: function() {
       //注意事項
-      console.log('sss');
-      document.querySelector('#global-contents').classList.add('agreement');
+      if(this.permissionPs == '24373') {
+        document.querySelector('#global-contents').classList.add('agreement');
+      } else {
+        alert('利用許可コードが間違っている、または入力されていません');
+      }
     }
   }
 };
@@ -526,7 +536,7 @@ export default {
   display: none;
 }
 .start-ms {
-  padding: 8px 5px 25px;
+  padding: 8px 5px 40px;
   width: 80%;
   position: absolute;
   top: 50%;
@@ -560,6 +570,19 @@ export default {
 .start-ms-btn:hover {
   cursor: pointer;
   opacity: 0.6;
+}
+
+.start-ms-label {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.start-ms-input {
+  margin-left: 6px;
+  font-size: 12px;
+  border: none;
+  border-bottom: 1px solid black;
+  outline: none;
 }
 
 
