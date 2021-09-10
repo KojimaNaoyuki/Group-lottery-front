@@ -1,0 +1,174 @@
+[debug] [2021-08-14T12:07:56.406Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:07:56.408Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2021-08-14T12:07:56.408Z] CLI Version:   9.5.0
+[debug] [2021-08-14T12:07:56.408Z] Platform:      win32
+[debug] [2021-08-14T12:07:56.409Z] Node Version:  v14.15.0
+[debug] [2021-08-14T12:07:56.409Z] Time:          Sat Aug 14 2021 21:07:56 GMT+0900 (日本標準時)
+[debug] [2021-08-14T12:07:56.410Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:07:56.410Z] 
+[debug] [2021-08-14T12:07:56.412Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2021-08-14T12:07:56.434Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-08-14T12:07:56.436Z] > authorizing via signed-in user
+[debug] [2021-08-14T12:07:56.436Z] [iam] checking project group-lottery-3409e for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-08-14T12:07:56.437Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-08-14T12:07:56.438Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:07:56.653Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sat, 14 Aug 2021 12:07:56 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:07:56.663Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/group-lottery-3409e:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-08-14T12:07:56.949Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2021-08-14T12:07:56.949Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2021-08-14T12:07:57.432Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 14 Aug 2021 12:07:56 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=628","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:07:57.433Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project group-lottery-3409e:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2021-08-14T12:07:57.433Z] > refreshing access token with scopes: []
+[debug] [2021-08-14T12:07:57.433Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:07:57.637Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","date":"Sat, 14 Aug 2021 12:07:57 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:07:57.646Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e [none]
+[debug] [2021-08-14T12:07:58.382Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e 403
+[debug] [2021-08-14T12:07:58.382Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2021-08-14T12:07:58.382Z] HTTP Error: 403, The caller does not have permission
+[debug] [2021-08-14T12:07:58.533Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at module.exports (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Client.doRequest (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:238:23)
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+    at async Client.request (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:96:20)
+    at async Object.getFirebaseProject (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:289:21)
+    at async Object.getDefaultHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\getDefaultHostingSite.js:8:21)
+    at async requireHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\requireHostingSite.js:9:18)
+    at async Object.fn (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\deploy.js:66:9)
+    at async C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\command.js:161:17
+[error] 
+[error] Error: Failed to get Firebase project group-lottery-3409e. Please make sure the project exists and your account has permission to access it.
+[debug] [2021-08-14T12:17:54.118Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:17:54.120Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2021-08-14T12:17:54.120Z] CLI Version:   9.5.0
+[debug] [2021-08-14T12:17:54.120Z] Platform:      win32
+[debug] [2021-08-14T12:17:54.121Z] Node Version:  v14.15.0
+[debug] [2021-08-14T12:17:54.121Z] Time:          Sat Aug 14 2021 21:17:54 GMT+0900 (日本標準時)
+[debug] [2021-08-14T12:17:54.122Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:17:54.122Z] 
+[debug] [2021-08-14T12:17:54.129Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-08-14T12:17:54.130Z] > authorizing via signed-in user
+[debug] [2021-08-14T12:17:54.130Z] [iam] checking project group-lottery-3409e for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-08-14T12:17:54.132Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-08-14T12:17:54.133Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:17:54.342Z] <<< HTTP RESPONSE 200 {"date":"Sat, 14 Aug 2021 12:17:53 GMT","pragma":"no-cache","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:17:54.348Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/group-lottery-3409e:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-08-14T12:17:55.234Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 14 Aug 2021 12:17:54 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=695","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:17:55.234Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project group-lottery-3409e:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2021-08-14T12:17:55.235Z] > refreshing access token with scopes: []
+[debug] [2021-08-14T12:17:55.235Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:17:55.438Z] <<< HTTP RESPONSE 200 {"date":"Sat, 14 Aug 2021 12:17:54 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:17:55.441Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e [none]
+[debug] [2021-08-14T12:17:56.171Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e 403
+[debug] [2021-08-14T12:17:56.171Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2021-08-14T12:17:56.171Z] HTTP Error: 403, The caller does not have permission
+[debug] [2021-08-14T12:17:56.270Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at module.exports (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Client.doRequest (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:238:23)
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+    at async Client.request (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:96:20)
+    at async Object.getFirebaseProject (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:289:21)
+    at async Object.getDefaultHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\getDefaultHostingSite.js:8:21)
+    at async requireHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\requireHostingSite.js:9:18)
+    at async Object.fn (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\deploy.js:66:9)
+    at async C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\command.js:161:17
+[error] 
+[error] Error: Failed to get Firebase project group-lottery-3409e. Please make sure the project exists and your account has permission to access it.
+[debug] [2021-08-14T12:18:58.704Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:18:58.706Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2021-08-14T12:18:58.706Z] CLI Version:   9.5.0
+[debug] [2021-08-14T12:18:58.706Z] Platform:      win32
+[debug] [2021-08-14T12:18:58.706Z] Node Version:  v14.15.0
+[debug] [2021-08-14T12:18:58.707Z] Time:          Sat Aug 14 2021 21:18:58 GMT+0900 (日本標準時)
+[debug] [2021-08-14T12:18:58.707Z] ----------------------------------------------------------------------
+[debug] [2021-08-14T12:18:58.707Z] 
+[debug] [2021-08-14T12:18:58.714Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-08-14T12:18:58.714Z] > authorizing via signed-in user
+[debug] [2021-08-14T12:18:58.714Z] [iam] checking project group-lottery-3409e for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-08-14T12:18:58.718Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-08-14T12:18:58.718Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:18:58.877Z] <<< HTTP RESPONSE 200 {"pragma":"no-cache","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sat, 14 Aug 2021 12:18:58 GMT","expires":"Mon, 01 Jan 1990 00:00:00 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:18:58.886Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/group-lottery-3409e:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-08-14T12:18:59.634Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 14 Aug 2021 12:18:59 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=687","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:18:59.634Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project group-lottery-3409e:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2021-08-14T12:18:59.635Z] > refreshing access token with scopes: []
+[debug] [2021-08-14T12:18:59.635Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-14T12:18:59.832Z] <<< HTTP RESPONSE 200 {"date":"Sat, 14 Aug 2021 12:18:59 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-14T12:18:59.842Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e [none]
+[debug] [2021-08-14T12:19:00.572Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e 403
+[debug] [2021-08-14T12:19:00.572Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2021-08-14T12:19:00.572Z] HTTP Error: 403, The caller does not have permission
+[debug] [2021-08-14T12:19:00.668Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at module.exports (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Client.doRequest (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:238:23)
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+    at async Client.request (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:96:20)
+    at async Object.getFirebaseProject (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:289:21)
+    at async Object.getDefaultHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\getDefaultHostingSite.js:8:21)
+    at async requireHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\requireHostingSite.js:9:18)
+    at async Object.fn (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\deploy.js:66:9)
+    at async C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\command.js:161:17
+[error] 
+[error] Error: Failed to get Firebase project group-lottery-3409e. Please make sure the project exists and your account has permission to access it.
+[debug] [2021-08-21T07:41:09.544Z] ----------------------------------------------------------------------
+[debug] [2021-08-21T07:41:09.546Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2021-08-21T07:41:09.546Z] CLI Version:   9.5.0
+[debug] [2021-08-21T07:41:09.547Z] Platform:      win32
+[debug] [2021-08-21T07:41:09.547Z] Node Version:  v14.15.0
+[debug] [2021-08-21T07:41:09.548Z] Time:          Sat Aug 21 2021 16:41:09 GMT+0900 (日本標準時)
+[debug] [2021-08-21T07:41:09.548Z] ----------------------------------------------------------------------
+[debug] [2021-08-21T07:41:09.548Z] 
+[debug] [2021-08-21T07:41:09.550Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2021-08-21T07:41:09.573Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-08-21T07:41:09.574Z] > authorizing via signed-in user
+[debug] [2021-08-21T07:41:09.574Z] [iam] checking project group-lottery-3409e for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-08-21T07:41:09.575Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2021-08-21T07:41:09.576Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-21T07:41:09.738Z] <<< HTTP RESPONSE 200 {"expires":"Mon, 01 Jan 1990 00:00:00 GMT","cache-control":"no-cache, no-store, max-age=0, must-revalidate","date":"Sat, 21 Aug 2021 07:41:09 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-21T07:41:09.771Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/group-lottery-3409e:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-08-21T07:41:10.036Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2021-08-21T07:41:10.036Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2021-08-21T07:41:10.502Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Sat, 21 Aug 2021 07:41:10 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=621","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-21T07:41:10.503Z] [iam] error while checking permissions, command may fail: FirebaseError: Authorization failed. This account is missing the following required permissions on project group-lottery-3409e:
+
+  firebase.projects.get
+  firebasehosting.sites.update
+[debug] [2021-08-21T07:41:10.503Z] > refreshing access token with scopes: []
+[debug] [2021-08-21T07:41:10.504Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-08-21T07:41:10.626Z] <<< HTTP RESPONSE 200 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","pragma":"no-cache","date":"Sat, 21 Aug 2021 07:41:10 GMT","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-T051=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-08-21T07:41:10.648Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e [none]
+[debug] [2021-08-21T07:41:11.232Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e 403
+[debug] [2021-08-21T07:41:11.232Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/group-lottery-3409e {"error":{"code":403,"message":"The caller does not have permission","status":"PERMISSION_DENIED"}}
+[debug] [2021-08-21T07:41:11.233Z] HTTP Error: 403, The caller does not have permission
+[debug] [2021-08-21T07:41:11.340Z] FirebaseError: HTTP Error: 403, The caller does not have permission
+    at module.exports (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\responseToError.js:38:12)
+    at Client.doRequest (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:238:23)
+    at processTicksAndRejections (internal/process/task_queues.js:93:5)
+    at async Client.request (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\apiv2.js:96:20)
+    at async Object.getFirebaseProject (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\management\projects.js:289:21)
+    at async Object.getDefaultHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\getDefaultHostingSite.js:8:21)
+    at async requireHostingSite (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\requireHostingSite.js:9:18)
+    at async Object.fn (C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\commands\deploy.js:66:9)
+    at async C:\Users\kojip\AppData\Roaming\npm\node_modules\firebase-tools\lib\command.js:161:17
+[error] 
+[error] Error: Failed to get Firebase project group-lottery-3409e. Please make sure the project exists and your account has permission to access it.
