@@ -580,8 +580,8 @@ export default {
 .start-ms-input {
   margin-left: 6px;
   font-size: 12px;
-  border: none;
-  border-bottom: 1px solid black;
+  border: 1px solid rgb(163, 163, 163);
+  background-color: transparent;
   outline: none;
 }
 
