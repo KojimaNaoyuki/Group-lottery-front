@@ -118,4 +118,4 @@ sw.\*
 
 \*.swp
 
-firebase.js
+plugins/firebase.js
