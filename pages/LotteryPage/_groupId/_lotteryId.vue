@@ -372,6 +372,7 @@ export default {
             //同一名で登録されていないか確認
             //DB登録済み名チェック
             let ValidationFlag = true;
+            //-------------------------------------------------// original API  //-------------------------------------------------//
             // await axios
             // .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[0] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
             // .then(response => {
@@ -380,6 +381,9 @@ export default {
             //     }
             // })
             // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
             await roomsMembersRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId).where('member_name', '==', this.inputName[0])
             .get()
             .then(querySnapshot => {
@@ -392,20 +396,26 @@ export default {
                 alert('同じ名前が使用されています');
                 return;
             }
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             //代表者のIDを取得
             let leaderId;
+            //-------------------------------------------------// original API  //-------------------------------------------------//
             // await axios
             // .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
             // .then(response => {
             //     leaderId = response.data.data + 1;
             // })
             // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
             await roomsMembersRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     this.leaderId = doc.data().id + 1;
                 })
-            })
+            });
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             let selectNum;
 
@@ -415,6 +425,7 @@ export default {
             selectNum = document.formSelect.status.selectedIndex;
             const status = document.formSelect.status.options[selectNum].value;
 
+            //-------------------------------------------------// original API  //-------------------------------------------------//
             // const sendData = {
                 // member_name: this.inputName[0],
                 // school_year: schoolYear,
@@ -429,6 +440,9 @@ export default {
             // .post("https://www.kwebk.xyz/api/roomMember/", sendData)
             // .then(() => console.log("データベース登録完了"))
             // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
             await roomsMembersRef.doc(String(this.leaderId)).set({
                 id: Number(this.leaderId),
                 member_name: this.inputName[0],
@@ -441,6 +455,7 @@ export default {
             })
             .then(() => console.log('firebase ok'))
             .catch(error => console.log(error));
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             this.loaderDisplay(false); //ローダー終了
 
@@ -480,6 +495,7 @@ export default {
 
             //DB登録済み名チェック
             for(let i = 1; i < this.inputName.length; i++) {
+                //-------------------------------------------------// original API  //-------------------------------------------------//
                 // await axios
                 // .get("https://www.kwebk.xyz/api/roomMemberValidationName/?member_name=" + this.inputName[i] + "&group_id=" + this.GroupId + "&room_id=" + this.LotteryId)
                 // .then(response => {
@@ -488,6 +504,9 @@ export default {
                 //     }
                 // })
                 // .catch(error => console.log(error));
+                //-------------------------------------------------// original API  //-------------------------------------------------//
+
+                //-------------------------------------------------//  firebase  //-------------------------------------------------//
                 await roomsMembersRef.where('group_id', '==', this.GroupId).where('room_id', '==', this.LotteryId).where('member_name', '==', this.inputName[i])
                 .get()
                 .then(querySnapshot => {
@@ -495,6 +514,7 @@ export default {
                         ValidationFlag = false;
                     });
                 }).catch(error => console.log(error));
+                //-------------------------------------------------//  firebase  //-------------------------------------------------//
             }
             if(!ValidationFlag) {
                 this.loaderDisplay(false); //ローダー終了
@@ -504,17 +524,22 @@ export default {
 
             //代表者のIDを取得
             let leaderId;
+            //-------------------------------------------------// original API  //-------------------------------------------------//
             // await axios
             // .get("https://www.kwebk.xyz/api/roomMemberGetMaxId")
             // .then(response => {
             //     leaderId = response.data.data + 1;
             // })
             // .catch(error => console.log(error));
+            //-------------------------------------------------// original API  //-------------------------------------------------//
+
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
             await roomsMembersRef.orderBy("id", "desc").limit(1).get().then(querySnapshot => {
                 querySnapshot.forEach(doc => {
                     this.leaderId = doc.data().id + 1;
-                })
-            })
+                });
+            });
+            //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
             let selectNum;
             let schoolYear;
@@ -531,6 +556,7 @@ export default {
                 str += '.options[' + selectNum + '].' + 'value';
                 status = eval(str);
 
+                //-------------------------------------------------// original API  //-------------------------------------------------//
                 // const sendData = {
                 //     member_name: this.inputName[i],
                 //     school_year: schoolYear,
@@ -545,6 +571,9 @@ export default {
                 // .post("https://www.kwebk.xyz/api/roomMember/", sendData)
                 // .then(() => console.log("データベース登録完了"))
                 // .catch(error => console.log(error));
+                //-------------------------------------------------// original API  //-------------------------------------------------//
+
+                //-------------------------------------------------//  firebase  //-------------------------------------------------//
                 await roomsMembersRef.doc(String(this.leaderId+(i-1))).set({
                     id: Number(this.leaderId+(i-1)),
                     member_name: this.inputName[i],
@@ -557,6 +586,7 @@ export default {
                 })
                 .then(() => console.log('firebase ok'))
                 .catch(error => console.log(error));
+                //-------------------------------------------------//  firebase  //-------------------------------------------------//
             }
 
             this.loaderDisplay(false); //ローダー終了
