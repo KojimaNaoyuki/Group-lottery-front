@@ -3,17 +3,35 @@
     <div class="wrap">
       <section class="card">
         <div class="content-width">
-          <validation-observer ref="obs" v-slot="ObserverProps">
-            <validation-provider v-slot="ProviderProps" rules="min:5">
-              <h2 class="card-title">グループID</h2>
-              <input type="text" placeholder="ID" class="input" v-model="groupInputId" name="ID">
-              <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
-            </validation-provider>
+
+          <div class="mv">
+            <img src="~/assets/img/mv.jpg" alt="mv" class="mv-img">
+          </div>
+
+          <div class="card-inner">
+            <div class="card-inner-text">
+              <p>Group Selectorは団体の人数調整に最適です</p>
+              <p>一人、複数人、どちらの場合でも抽選可能！</p>
+            </div>
 
             <div class="mtb-M"></div>
 
-            <Btn text="決定" @clickedFn="ToLotteryList" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
-          </validation-observer>
+            <div class="card-inner-content">
+              <validation-observer ref="obs" v-slot="ObserverProps">
+                <validation-provider v-slot="ProviderProps" rules="min:5">
+                  <h2 class="card-title">グループに参加</h2>
+                  <input type="text" placeholder="グループID" class="card-input" v-model="groupInputId" name="ID">
+                  <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
+                </validation-provider>
+
+                <div class="mtb-M"></div>
+
+                <Btn text="参加" @clickedFn="ToLotteryList" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
+              </validation-observer>
+            </div>
+
+          </div>
+
         </div>
       </section>
       <!-- アコーディオンメニュー -->
@@ -394,19 +412,36 @@ export default {
 
 .wrap {
   position: relative;
-  top: 10%;
+  top: 0;
   left: 0;
 }
 
 .card {
+  position: relative;
   padding: 20px 0 40px 0;
-  background-color: #44968e;
   text-align: center;
+  height: 450px;
+}
+.card-inner {
+  z-index: 10;
+  opacity: 1;
+}
+.card-inner-text {
+  padding: 50px 10px 25px;
+}
+.card-inner-text > p {
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  font-weight: bold;
+  line-height: 28px;
+  color: #dedede;
 }
 .card-title {
   padding: 10px 0 20px 0;
   font-size: 20px;
   letter-spacing: 2px;
+  color: #dedede;
+  z-index: 10;
 }
 
 .new-create {
@@ -503,7 +538,7 @@ export default {
 }
 
 .input {
-  width: 70%;
+  width: 240px;
   padding: 0 5px;
   background-color: transparent;
   border: none;
@@ -512,6 +547,20 @@ export default {
   transition: all 0.4s;
 }
 .input:hover {
+  border-bottom: solid 2px #3f51b5;
+}
+
+.card-input {
+  width: 260px;
+  padding: 0 5px;
+  background-color: #FFF;
+  border: none;
+  border-bottom: solid 2px #dedede;
+  outline: none !important;
+  transition: all 0.4s;
+  color: #dedede;
+}
+.card-input:hover {
   border-bottom: solid 2px #3f51b5;
 }
 
@@ -585,10 +634,27 @@ export default {
   outline: none;
 }
 
+.mv {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0.3;
+  z-index: -10;
+}
+.mv-img {
+  width: 100vw;
+  height: 450px;
+  object-fit: cover;
+}
+
 
 @media screen and (min-width: 1060px) {
     .wrap {
       /* width: calc(100vw - 201px); */
+    }
+    .card-inner-text > p {
+      font-size: 22px;
+      line-height: 42px;
     }
 }
 </style>
