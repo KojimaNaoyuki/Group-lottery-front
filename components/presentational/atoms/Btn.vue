@@ -18,7 +18,7 @@ export default {
     padding: 2px 40px;
     background-color: #2382ce;
     border: none;
-    border-bottom: solid 3px #4159cc;
+    border-bottom: solid 3px #53609e;
     font-size: 16px;
     font-weight: bold;
     letter-spacing: 2px;
