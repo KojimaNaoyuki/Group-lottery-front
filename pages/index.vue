@@ -64,6 +64,18 @@
                   <div class="error-ms">{{ ProviderProps.errors[0] }}</div>
                 </validation-provider>
               </label>
+
+              <label class="new-create-label-permission">
+                <input type="checkbox" name="permission" id="permission">
+                注意事項・免責事項に同意する
+              </label>
+              <div @click="permissionOpen" class="permission-title">注意事項・免責事項</div>
+
+              <label class="new-create-label">
+                  <div class="new-create-input-box">利用許可コード</div>
+
+                  <input type="text" placeholder="入力" class="input" v-model="permissionPs" name="利用許可コード">
+              </label>
               
               <Btn text="登録" @clickedFn="register" :disabled="ObserverProps.invalid || !ObserverProps.validated" />
             </validation-observer>
@@ -134,12 +146,7 @@
       <p>例) ×××@〇〇〇.com</p>
       <p>ご利用は自己責任でお願いします。</p>
       <p>一般に公開されているサービスではないため、利用許可コードをお持ちの方のみのご利用をお願い申し上げます。</p>
-      <p>利用許可コードを入力し、「同意する」のクリックをお願いします。クリックしたことで、上記記載内容に同意したこととします。</p>
-      <label class="start-ms-label">
-        利用許可コード
-        <input type="text" v-model="permissionPs" class="start-ms-input" placeholder="コードを入力">
-      </label>
-      <button class="start-ms-btn" @click="agreement">同意する</button>
+      <button class="start-ms-btn" @click="permissionClose">閉じる</button>
     </div>
   </div>
 </template>
@@ -209,7 +216,19 @@ export default {
     },
     
     register: async function() {
-      //アカウント新規作成(firebase)
+      //アカウント新規作成
+      
+      //注意事項・免責事項同意確認
+      if(!document.querySelector('#permission').checked) {
+        alert('注意事項・免責事項に同意されていません');
+        return;
+      }
+
+      //利用許可コード確認
+      if(this.permissionPs != '24373') {
+        alert('利用許可コードが間違っています');
+        return;
+      }
 
       //-------------------------------------------------//  firebase  //-------------------------------------------------//
       let firebaseOk = true;
@@ -382,13 +401,13 @@ export default {
       }
     },
 
-    agreement: function() {
-      //注意事項
-      if(this.permissionPs == '24373') {
-        document.querySelector('#global-contents').classList.add('agreement');
-      } else {
-        alert('利用許可コードが間違っている、または入力されていません');
-      }
+    permissionOpen: function() {
+      //注意事項open
+      document.querySelector('#global-contents').classList.add('start-ms-open');
+    },
+    permissionClose: function() {
+      //注意事項close
+      document.querySelector('#global-contents').classList.remove('start-ms-open');
     }
   }
 };
@@ -485,6 +504,21 @@ export default {
   display: block;
   margin: 0 0 40px 0;
 }
+.new-create-label-permission {
+  display: block;
+  margin: 0 0 0 0;
+  font-size: 15px;
+}
+.permission-title {
+  margin-bottom: 40px;
+  font-size: 14px;
+  color: #3f51b5;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.permission-title:hover {
+  opacity: 0.8;
+}
 
 .new-create-input-box {
   font-size: 16px;
@@ -558,7 +592,6 @@ export default {
   border-bottom: solid 2px #dedede;
   outline: none !important;
   transition: all 0.4s;
-  color: #dedede;
 }
 .card-input:hover {
   border-bottom: solid 2px #3f51b5;
@@ -572,6 +605,7 @@ export default {
 }
 
 .ms-back {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -581,10 +615,11 @@ export default {
   opacity: 0.4;
   z-index: 100;
 }
-.agreement .ms-back {
-  display: none;
+.start-ms-open .ms-back {
+  display: block;
 }
 .start-ms {
+  display: none;
   padding: 8px 5px 40px;
   width: 80%;
   position: absolute;
@@ -594,8 +629,8 @@ export default {
   background-color: #fff;
   z-index: 100;
 }
-.agreement .start-ms {
-  display: none;
+.start-ms-open .start-ms {
+  display: block;
 }
 .start-ms > h2 {
   margin-bottom: 10px;
