@@ -404,6 +404,7 @@ export default {
     permissionOpen: function() {
       //注意事項open
       document.querySelector('#global-contents').classList.add('start-ms-open');
+      document.scrollingElement.scrollTop = 0;
     },
     permissionClose: function() {
       //注意事項close
