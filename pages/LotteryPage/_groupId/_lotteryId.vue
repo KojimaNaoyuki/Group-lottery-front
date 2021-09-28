@@ -37,6 +37,7 @@
             <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />一人で参加</h2>
             <div class="list-contents">
                 <div class="content-width">
+                    <h3 class="list-ms">名前は公開されます。本名フルネームは登録しないでください。</h3>
                     <validation-observer ref="obs" v-slot="ObserverProps">
                         <label class="input-box">
                             <validation-provider v-slot="ProviderProps" rules="required">
@@ -70,6 +71,7 @@
             <h2 class="list-title" @click="listOpen(2)"><ListOpenIcon :text="list2Text" />複数人で参加</h2>
             <div class="list-contents-big">
                 <div class="content-width">
+                    <h3 class="list-ms">名前は公開されます。本名フルネームは登録しないでください。</h3>
                     <validation-observer ref="obs" v-slot="ObserverProps">
                         <label class="input-box" v-for="n in inputNum" :key="n">
                             <validation-provider v-slot="ProviderProps" rules="required">
@@ -703,6 +705,15 @@ form {
     transition: all 0.4s;
     text-align: center;
     padding: 40px 0;
+}
+
+.list-ms {
+    position: absolute;
+    top: -28px;
+    right: 0;
+    font-size: 11px;
+    font-weight: bold;
+    color: #a73f1e;
 }
 
 .member-list {
