@@ -354,7 +354,7 @@ export default {
 
       //-------------------------------------------------//  firebase  //-------------------------------------------------//
       await roomRef.doc(String(roomId)).set({
-        group_id: Number(roomId),
+        group_id: Number(lastedId),
         id: Number(roomId),
         lottery_day: '0000-00-00',
         lottery_title: 'デモ抽選',
