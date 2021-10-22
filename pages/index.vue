@@ -136,7 +136,7 @@
       <span></span>
     </div>
 
-    <div class="ms-back"></div>
+    <BackBlack />
     <div class="start-ms">
       <h2>注意事項・免責事項</h2>
       <p>本サービスは、自主利用及び自主学習のため開発されました。そのため、広く一般に公開されているサービスではありません。</p>
@@ -159,6 +159,7 @@ import Input from './../components/presentational/atoms/Input.vue';
 import ListOpenIcon from './../components/presentational/atoms/ListOpenIcon.vue';
 import Btn from './../components/presentational/atoms/Btn.vue';
 import DownArrow from './../components/presentational/atoms/DownArrow.vue';
+import BackBlack from './../components/presentational/atoms/BackBlack.vue';
 
 export default {
   layout: 'main',
@@ -166,7 +167,8 @@ export default {
     Input,
     ListOpenIcon,
     Btn,
-    DownArrow
+    DownArrow,
+    BackBlack
   },
   data() {
     return {
@@ -181,8 +183,6 @@ export default {
       loginPassword: null,
       permissionPs: null
     }
-  },
-  mounted: function() {
   },
   methods: {
     listOpen: function(num) {
@@ -606,20 +606,6 @@ export default {
   color: #a73f1e;
 }
 
-.ms-back {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: black;
-  opacity: 0.4;
-  z-index: 100;
-}
-.start-ms-open .ms-back {
-  display: block;
-}
 .start-ms {
   display: none;
   padding: 8px 5px 40px;

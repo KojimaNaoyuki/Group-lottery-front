@@ -18,7 +18,8 @@ export default {
       // { hid: 'keywords', name: 'keywords', content: 'Group Selector,抽選,人数調整,団体抽選,サークル抽選' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'apple-touch-icon', type: 'image/png', href: '/apple-touch-icon.png' }
     ]
   },
 

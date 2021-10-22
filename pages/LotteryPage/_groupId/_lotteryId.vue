@@ -643,7 +643,7 @@ form {
     font-size: 28px;
 }
 .lottery-info-title {
-    padding: 30px 0;
+    padding: 45px 0 30px;
     text-align: center;
     font-size: 22px;
 }
