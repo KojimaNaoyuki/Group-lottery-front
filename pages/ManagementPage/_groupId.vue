@@ -8,7 +8,7 @@
 
         <!-- アコーディオンメニュー -->
         <div class="list" id="list0">
-            <h2 class="list-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />投票を作成</h2>
+            <h2 class="list-title" @click="listOpen(0)"><ListOpenIcon :text="list0Text" />抽選を作成</h2>
             <div class="list-contents-big">
                 <div class="content-width">
                     <validation-observer ref="obs" v-slot="ObserverProps">
@@ -39,7 +39,7 @@
 
         <!-- アコーディオンメニュー -->
         <div class="list" id="list1">
-            <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />投票を管理</h2>
+            <h2 class="list-title" @click="listOpen(1)"><ListOpenIcon :text="list1Text" />抽選を管理</h2>
             <div class="list-contents-big">
                 <div class="content-width">
                     <label class="list-label">
@@ -111,7 +111,7 @@
                     </div>
 
                     <label class="list-label">
-                        <div class="list-input-box">投票を削除</div>
+                        <div class="list-input-box">抽選を削除</div>
                         <Btn text="削除" @clickedFn="deleteLottery" />
                     </label>
                 </div>

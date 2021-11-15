@@ -224,7 +224,8 @@ export default {
         .then(querySnapshot => {
             querySnapshot.forEach(doc => {
                 this.memberArr.push(doc.data());
-            })
+                console.log(this.memberArr);
+            });
         }).catch(error => console.log(error));
         //-------------------------------------------------//  firebase  //-------------------------------------------------//
 
