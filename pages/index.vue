@@ -367,7 +367,15 @@ export default {
 
       alert('アカウントを作成しました\nグループIDは ' + groupId + ' です\n必ず忘れないようにしてください');
 
-      location.reload(); //リロード
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
+      firebase
+      .auth()
+      .signInWithEmailAndPassword(this.email, this.password)
+      .then(() => {
+        this.$router.push('/ManagementPage/' + groupId);
+      })
+      .catch(error => console.log(error));
+      //-------------------------------------------------//  firebase  //-------------------------------------------------//
     },
     login: async function() {
       //ログイン

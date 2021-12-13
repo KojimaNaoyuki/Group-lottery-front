@@ -185,7 +185,7 @@ export default {
         firebase.auth().onAuthStateChanged(user => {
             if(!user) {
                 //ログインされていない
-                alert("ログインされていません");
+                console.log("ログインされていません");
                 this.$router.push('/');
             } else {
                 console.log('正常にログインされています');
@@ -253,7 +253,7 @@ export default {
     filters: {
         otherYear: function(value) {
             if(value == 0) {
-                return '他'
+                return '他';
             } else {
                 return value;
             }
